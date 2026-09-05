@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ItzShaafi | Premium PCMB Coaching</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #0A84FF;
+            --primary-soft: #5AC8FA;
+            --secondary: #5E5CE6;
+            --accent: #BF5AF2;
+            --success: #30D158;
+            --bg-dark: #000000;
+            --apple-transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        html, body {
+            overflow-x: hidden;
+            background-color: var(--bg-dark);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            isolation: isolate;
+            margin: 0;
+            padding: 0;
+        }
+
+        section {
+            isolation: isolate;
+            position: relative;
+        }
+
+        h1, h2, h3, .brand-font {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: -0.04em;
+        }
+
+        /* --- Ultra-Stable Apple Liquid Glass --- */
+        .glass {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01));
+            backdrop-filter: blur(30px) saturate(160%);
+            -webkit-backdrop-filter: blur(30px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            transition: var(--apple-transition);
+            /* Rendering Fixes for Chromium Ghosting */
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            contain: paint;
+        }
+
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(30px) saturate(160%);
+            -webkit-backdrop-filter: blur(30px) saturate(160%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--apple-transition);
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+        }
+
+        /* --- Eye-Catchy Liquid Orbs --- */
+        .orb-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            transform: translate3d(0, 0, 0);
+        }
+
+        .orb {
+            position: absolute;
+            z-index: -1;
+            opacity: 0.6;
+            animation: morph-float 20s ease-in-out infinite alternate;
+        }
+        .orb-1 { width: 700px; height: 700px; background: radial-gradient(circle, var(--primary), transparent 70%); top: -15%; left: -15%; animation-delay: 0s; }
+        .orb-2 { width: 600px; height: 600px; background: radial-gradient(circle, var(--secondary), transparent 70%); bottom: 5%; right: -10%; animation-delay: -5s; }
+        .orb-3 { width: 500px; height: 500px; background: radial-gradient(circle, var(--accent), transparent 70%); top: 25%; left: 35%; animation-delay: -10s; }
+
+        @keyframes morph-float {
+            0% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+                transform: translate(80px, 120px) scale(1.15);
+            }
+            100% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+                transform: translate(0, 0) scale(1);
+            }
+        }
+
+        /* --- Premium UI Components --- */
+        .logo-text {
+            background: linear-gradient(135deg, #fff 30%, var(--primary-soft) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(10, 132, 255, 0.4));
+            font-weight: 800;
+        }
+
+        .luxury-gradient {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transition: var(--apple-transition);
+            color: white;
+        }
+        .luxury-gradient:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 0 30px rgba(10, 132, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        /* --- Native iOS-style Micro-interactions --- */
+        a, button, .glass, .course-card {
+            transition: var(--apple-transition) !important;
+        }
+
+        .glass:hover, .course-card:hover {
+            transform: scale(1.03);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .course-card {
+            will-change: transform;
+        }
+        .course-card:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(10, 132, 255, 0.2);
+            border-color: var(--primary-soft);
+        }
+
+        #toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+        }
+        .toast {
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(15px);
+            border-left: 4px solid var(--primary);
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            color: white;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            transform: translateX(120%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-top: 1rem;
+        }
+        .toast.show { transform: translateX(0); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        .magnetic-btn {
+            transition: var(--apple-transition);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="orb-container">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <nav class="glass-dark fixed top-0 w-full z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="text-2xl logo-text">Itz<span class="font-extrabold">Shaafi</span></a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#home" class="text-sm font-medium text-gray-400 hover:text-white transition-colors tracking-tight">Home</a>
+                <a href="#courses" class="text-sm font-medium text-gray-400 hover:text-white transition-colors tracking-tight">Courses</a>
+                <a href="#about" class="text-sm font-medium text-gray-400 hover:text-white transition-colors tracking-tight">About</a>
+                <a href="#contact" class="text-sm font-medium text-gray-400 hover:text-white transition-colors tracking-tight">Contact</a>
+                <a href="#contact" class="luxury-gradient px-5 py-2 rounded-full text-sm font-bold text-white shadow-lg shadow-blue-500/20">Enroll Now</a>
+            </div>
+            <button id="menu-btn" class="md:hidden text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full glass border-t border-white/10 p-6 flex flex-col gap-4 md:hidden">
+            <a href="#home" class="text-lg font-medium py-2 border-b border-white/5">Home</a>
+            <a href="#courses" class="text-lg font-medium py-2 border-b border-white/5">Courses</a>
+            <a href="#about" class="text-lg font-medium py-2 border-b border-white/5">About</a>
+            <a href="#contact" class="text-lg font-medium py-2 border-b border-white/5">Contact</a>
+            <a href="#contact" class="luxury-gradient text-center py-3 rounded-xl font-bold">Enroll Now</a>
+        </div>
+    </nav>
+
+    <section id="home" class="relative min-h-screen flex items-center pt-20 px-6">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+            <div class="reveal">
+                <h1 class="text-6xl lg:text-8xl font-extrabold leading-[1.1] mb-6 tracking-tighter">
+                    Master PCMB with <br>
+                    <span class="logo-text">ItzShaafi</span>
+                </h1>
+                <p class="text-gray-400 text-lg mb-10 max-w-lg leading-relaxed font-light">
+                    Premium academic coaching tailored for SSC & HSC students in Tangail. We turn complex theories into simple, intuitive insights.
+                </p>
+                <div class="flex flex-wrap gap-5">
+                    <a href="#courses" class="bg-white text-black px-8 py-4 rounded-2xl font-bold hover:bg-gray-100 transition-all magnetic-btn">View Courses</a>
+                    <a href="#contact" class="glass px-8 py-4 rounded-2xl font-bold hover:bg-white/10 transition-all magnetic-btn">Get in Touch</a>
+                </div>
+            </div>
+            <div class="reveal relative">
+                <div class="glass p-8 rounded-[2.5rem] relative z-10 shadow-2xl border-blue-500/20">
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="text-xl font-bold flex items-center gap-3 tracking-tight">
+                            <span class="flex h-3 w-3 rounded-full bg-green-500 animate-pulse"></span>
+                            Live Batches 2026
+                        </h3>
+                        <span class="text-[10px] bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full font-bold uppercase tracking-wider">Live Updates</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-default">
+                            <div>
+                                <p class="font-bold tracking-tight">HSC Physics - Batch A</p>
+                                <p class="text-xs text-gray-400">Every Mon, Wed, Fri | 4 PM</p>
+                            </div>
+                            <span class="text-sm font-bold text-blue-400">Open</span>
+                        </div>
+                        <div class="flex justify-between items-center p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-default">
+                            <div>
+                                <p class="font-bold tracking-tight">HSC Chemistry - Batch B</p>
+                                <p class="text-xs text-gray-400">Every Tue, Thu, Sat | 5 PM</p>
+                            </div>
+                            <span class="text-sm font-bold text-blue-400">Open</span>
+                        </div>
+                        <div class="flex justify-between items-center p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-default">
+                            <div>
+                                <p class="font-bold tracking-tight">SSC Math Intensive</p>
+                                <p class="text-xs text-gray-400">Weekend Special | 8 AM</p>
+                            </div>
+                            <span class="text-sm font-bold text-yellow-400">Filling Fast</span>
+                        </div>
+                    </div>
+                    <button class="w-full mt-8 py-4 rounded-2xl luxury-gradient font-bold text-white hover:scale-[1.02] active:scale-95 transition-all">Apply for Seat</button>
+                </div>
+                <div class="absolute -top-12 -right-12 w-72 h-72 bg-blue-600/20 blur-3xl rounded-full -z-10"></div>
+                <div class="absolute -bottom-12 -left-12 w-72 h-72 bg-indigo-600/20 blur-3xl rounded-full -z-10"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="courses" class="py-32 px-6 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20 reveal">
+                <h2 class="text-5xl lg:text-6xl font-extrabold mb-6 tracking-tighter">Our Specialized <span class="logo-text">Courses</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">Comprehensive coaching for PCMB subjects designed to ensure top-tier results in public exams.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="course-card glass p-8 rounded-[2rem] reveal">
+                    <div class="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-8 text-blue-400">
+                        <div class="text-2xl font-bold">Ph</div>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 tracking-tight">Physics</h3>
+                    <p class="text-gray-400 text-sm mb-8 leading-relaxed">From classical mechanics to quantum physics. Concept-based learning with practical applications.</p>
+                    <ul class="text-xs space-y-3 text-gray-300 mb-10">
+                        <li class="flex items-center gap-3"><span class="text-blue-500">✓</span> Detailed Note Sheets</li>
+                        <li class="flex items-center gap-3"><span class="text-blue-500">✓</span> Math Problem Solving</li>
+                        <li class="flex items-center gap-3"><span class="text-blue-500">✓</span> Model Tests</li>
+                    </ul>
+                    <a href="#contact" class="block text-center py-3 rounded-xl border border-white/10 hover:bg-white/10 transition-all text-sm font-semibold">Enroll Now</a>
+                </div>
+                <div class="course-card glass p-8 rounded-[2rem] reveal" style="transition-delay: 0.1s">
+                    <div class="w-14 h-14 bg-indigo-500/20 rounded-2xl flex items-center justify-center mb-8 text-indigo-400">
+                        <div class="text-2xl font-bold">Ch</div>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 tracking-tight">Chemistry</h3>
+                    <p class="text-gray-400 text-sm mb-8 leading-relaxed">Understanding the atomic world. Comprehensive coverage of Organic, Inorganic, and Physical Chemistry.</p>
+                    <ul class="text-xs space-y-3 text-gray-300 mb-10">
+                        <li class="flex items-center gap-3"><span class="text-indigo-500">✓</span> Reaction Mechanism Guides</li>
+                        <li class="flex items-center gap-3"><span class="text-indigo-500">✓</span> Periodic Table Mastery</li>
+                        <li class="flex items-center gap-3"><span class="text-indigo-500">✓</span> Periodic Mock Tests</li>
+                    </ul>
+                    <a href="#contact" class="block text-center py-3 rounded-xl border border-white/10 hover:bg-white/10 transition-all text-sm font-semibold">Enroll Now</a>
+                </div>
+                <div class="course-card glass p-8 rounded-[2rem] reveal" style="transition-delay: 0.2s">
+                    <div class="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-8 text-blue-400">
+                        <div class="text-2xl font-bold">Ma</div>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 tracking-tight">Mathematics</h3>
+                    <p class="text-gray-400 text-sm mb-8 leading-relaxed">Calculus, Algebra, and Geometry made simple. Focus on logical reasoning and accuracy.</p>
+                    <ul class="text-xs space-y-3 text-gray-300 mb-10">
+                        <li class="flex items-center gap-3"><span class="text-blue-500">✓</span> Shortcut Techniques</li>
+                        <li class="flex items-center gap-3"><span class="text-blue-500">✓</span> Rigorous Practice Sets</li>
+                        <li class="flex items-center gap-3"><span class="text-blue-500">✓</span> 1-on-1 Doubt Clearing</li>
+                    </ul>
+                    <a href="#contact" class="block text-center py-3 rounded-xl border border-white/10 hover:bg-white/10 transition-all text-sm font-semibold">Enroll Now</a>
+                </div>
+                <div class="course-card glass p-8 rounded-[2rem] reveal" style="transition-delay: 0.3s">
+                    <div class="w-14 h-14 bg-indigo-500/20 rounded-2xl flex items-center justify-center mb-8 text-indigo-400">
+                        <div class="text-2xl font-bold">Bi</div>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 tracking-tight">Biology</h3>
+                    <p class="text-gray-400 text-sm mb-8 leading-relaxed">Exploring the science of life. Detailed studies of Botany and Zoology with visual aids.</p>
+                    <ul class="text-xs space-y-3 text-gray-300 mb-10">
+                        <li class="flex items-center gap-3"><span class="text-indigo-500">✓</span> Visual Diagrams Library</li>
+                        <li class="flex items-center gap-3"><span class="text-indigo-500">✓</span> Mnemonic Learning</li>
+                        <li class="flex items-center gap-3"><span class="text-indigo-500">✓</span> Full Syllabus coverage</li>
+                    </ul>
+                    <a href="#contact" class="block text-center py-3 rounded-xl border border-white/10 hover:bg-white/10 transition-all text-sm font-semibold">Enroll Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-32 px-6 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+            <div class="reveal relative">
+                <div class="glass p-2 rounded-[2.5rem] rotate-2 scale-105">
+                    <div class="bg-black p-10 rounded-[2rem] -rotate-2 border border-white/10">
+                        <div class="flex items-center gap-5 mb-8">
+                            <div class="w-16 h-16 rounded-full luxury-gradient flex items-center justify-center text-2xl font-bold text-white shadow-lg">S</div>
+                            <div>
+                                <h4 class="text-xl font-bold tracking-tight">Shaafi's Vision</h4>
+                                <p class="text-sm text-gray-400 font-medium">Founder & Head Coach</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 italic text-lg leading-relaxed">
+                            "Our mission is to bridge the gap between rote memorization and conceptual clarity. We don't just teach for exams; we teach for understanding."
+                        </p>
+                    </div>
+                </div>
+                <div class="absolute -bottom-8 -right-8 glass px-8 py-5 rounded-2xl shadow-2xl animate-bounce">
+                    <p class="text-blue-400 font-bold text-lg">98% Success Rate</p>
+                    <p class="text-xs text-gray-400 font-medium">In last 3 academic years</p>
+                </div>
+            </div>
+            <div class="reveal">
+                <h2 class="text-5xl lg:text-6xl font-extrabold mb-10 tracking-tighter">Why Choose <span class="logo-text">ItzShaafi?</span></h2>
+                <div class="space-y-8">
+                    <div class="flex gap-6 group">
+                        <div class="w-14 h-14 glass rounded-2xl flex items-center justify-center text-blue-400 shrink-0 group-hover:scale-110 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.548a3 3 0 00-3.536 3.536l-.548-.548z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-bold mb-2 tracking-tight">Conceptual Clarity</h4>
+                            <p class="text-gray-400 text-sm leading-relaxed">We break down complex topics into intuitive building blocks that make learning effortless.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6 group">
+                        <div class="w-14 h-14 glass rounded-2xl flex items-center justify-center text-blue-400 shrink-0 group-hover:scale-110 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-bold mb-2 tracking-tight">Personalized Attention</h4>
+                            <p class="text-gray-400 text-sm leading-relaxed">Small batch sizes to ensure every student's doubt is resolved and potential is maximized.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6 group">
+                        <div class="w-14 h-14 glass rounded-2xl flex items-center justify-center text-blue-400 shrink-0 group-hover:scale-110 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-bold mb-2 tracking-tight">Exam-Ready Strategy</h4>
+                            <p class="text-gray-400 text-sm leading-relaxed">Customized mock tests and time-management workshops to excel in public exams.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-32 px-6 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20 reveal">
+                <h2 class="text-5xl lg:text-6xl font-extrabold mb-6 tracking-tighter">Get In <span class="logo-text">Touch</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">Ready to start your journey to academic excellence? Send us a message today.</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-16">
+                <div class="glass p-10 rounded-[2.5rem] reveal">
+                    <form action="https://formspree.io/f/mljelvbz" method="POST" class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">Full Name</label>
+                                <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors placeholder:text-gray-600" placeholder="John Doe">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">Phone Number</label>
+                                <input type="tel" name="phone" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors placeholder:text-gray-600" placeholder="+880 1XXX XXXXXX">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">Course Interested In</label>
+                            <select name="course" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors appearance-none cursor-pointer">
+                                <option value="Physics" class="bg-black">Physics</option>
+                                <option value="Chemistry" class="bg-black">Chemistry</option>
+                                <option value="Mathematics" class="bg-black">Mathematics</option>
+                                <option value="Biology" class="bg-black">Biology</option>
+                                <option value="Full PCMB" class="bg-black">Full PCMB</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">Message</label>
+                            <textarea name="message" rows="4" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors placeholder:text-gray-600" placeholder="How can we help you?"></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-4 rounded-2xl luxury-gradient font-bold text-white hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-blue-500/20">Send Inquiry</button>
+                    </form>
+                </div>
+                <div class="flex flex-col justify-center space-y-8 reveal">
+                    <div class="glass p-8 rounded-3xl flex gap-6 items-start group hover:bg-white/10 transition-all cursor-default">
+                        <div class="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 shrink-0 group-hover:scale-110 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold mb-1 tracking-tight">Visit Us</h4>
+                            <p class="text-gray-400 text-sm leading-relaxed">Zilla Sadar Road, Tangail</p>
+                        </div>
+                    </div>
+                    <a href="https://wa.me/8801518945763" target="_blank" class="glass p-8 rounded-3xl flex gap-6 items-start group hover:bg-white/10 transition-all cursor-pointer">
+                        <div class="w-14 h-14 bg-green-500/20 rounded-2xl flex items-center justify-center text-green-400 shrink-0 group-hover:scale-110 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M.057 24l1.687-6.163C2.476 16.45 10.46 13.02 17.12 13.02c2.37 0 4.53 1.1 5.9 2.83l3.36 4.22-4.26-1.12c-.35-.09-2.03-.74-3.74-.74-1.71 0-3.13.81-3.54 1.87l-1.1 2.48-2.8-1.06c-.54-.2-1.26-.3-2.07-.3-1.57 0-3.13.83-3.63 1.97L0 24h.057z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold mb-1 tracking-tight">WhatsApp / Call</h4>
+                            <p class="text-gray-400 text-sm leading-relaxed">+880 151 8945763</p>
+                        </div>
+                    </a>
+                    <a href="mailto:shaafiulislamkhan@gmail.com" class="glass p-8 rounded-3xl flex gap-6 items-start group hover:bg-white/10 transition-all cursor-pointer">
+                        <div class="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 shrink-0 group-hover:scale-110 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold mb-1 tracking-tight">Email Us</h4>
+                            <p class="text-gray-400 text-sm leading-relaxed">shaafiulislamkhan@gmail.com</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-16 border-t border-white/10 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+            <a href="#" class="text-2xl logo-text">Itz<span class="font-extrabold">Shaafi</span></a>
+            <p class="text-gray-500 text-sm font-medium">© 2026 ItzShaafi Coaching Center. All rights reserved.</p>
+            <div class="flex gap-8">
+                <a href="https://www.facebook.com/shaafiulislamkhan" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">Facebook</a>
+                <a href="https://www.instagram.com/shaafiul_islam_khan" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">Instagram</a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Advanced Scroll Reveal
+        const observerOptions = { threshold: 0.15 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 3D Tilt Effect for Course Cards
+        const cards = document.querySelectorAll('.course-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = (y - centerY) / 15;
+                const rotateY = (centerX - x) / 15;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+            });
+        });
+
+        // Magnetic Button Effect
+        const magneticBtns = document.querySelectorAll('.magnetic-btn');
+        magneticBtns.forEach(btn => {
+            btn.addEventListener('mousemove', e => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = `translate(0, 0)`;
+            });
+        });
+    </script>
+</body>
+</html>
