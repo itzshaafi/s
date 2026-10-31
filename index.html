@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shaafiul Islam Khan — Portfolio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts (Inter for Apple-like typography) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                    },
+                    colors: {
+                        apple: {
+                            dark: '#020617',
+                            cyan: '#00f0ff',
+                            blue: '#0066ff',
+                            indigo: '#4f46e5'
+                        }
+                    },
+                    animation: {
+                        blob: "blob 15s infinite alternate",
+                    },
+                    keyframes: {
+                        blob: {
+                            "0%": { transform: "translate(0px, 0px) scale(1)" },
+                            "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+                            "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+                            "100%": { transform: "translate(0px, 0px) scale(1)" }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Modern Reset & Typography */
+        * { box-sizing: border-box; }
+        body, html {
+            background-color: #020617;
+            color: #f8fafc;
+            overflow-x: hidden;
+            cursor: none; /* Custom droplet cursor */
+            font-family: 'Inter', -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* LIQUID GLASSMORPHISM SYSTEM */
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            /* Delicate light-catching borders simulating glass edges */
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Specular highlight overlay for extra realism */
+        .liquid-glass::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+            transform: skewX(-20deg);
+            pointer-events: none;
+            transition: left 0.7s ease;
+        }
+        .liquid-glass:hover::after {
+            left: 200%;
+        }
+
+        .liquid-pill {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(25px) saturate(200%);
+            -webkit-backdrop-filter: blur(25px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .liquid-pill:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 15px 35px rgba(0, 240, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* Floating iOS Dock */
+        .ios-dock {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(40px) saturate(250%);
+            -webkit-backdrop-filter: blur(40px) saturate(250%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            border-radius: 9999px;
+        }
+
+        /* Magnetic Target Elements (3D Physics) */
+        .magnetic-target {
+            will-change: transform;
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+        .magnetic-target:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 20px 40px rgba(0, 240, 255, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Typography Gradients & Glows */
+        .glow-text-cyan { text-shadow: 0 0 25px rgba(0, 240, 255, 0.5); }
+        .text-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #a5f3fc 30%, #00f0ff 60%, #4f46e5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Water Droplet Custom Cursor */
+        .cursor-dot {
+            position: fixed; top: 0; left: 0;
+            width: 6px; height: 6px;
+            background: #ffffff;
+            border-radius: 50%;
+            pointer-events: none; z-index: 10000;
+            box-shadow: 0 0 15px #00f0ff, 0 0 30px #00f0ff;
+            transform: translate(-50%, -50%);
+        }
+        .cursor-droplet {
+            position: fixed; top: 0; left: 0;
+            width: 40px; height: 40px;
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, background 0.3s ease, backdrop-filter 0.3s ease;
+        }
+        body.cursor-active .cursor-droplet {
+            width: 70px; height: 70px;
+            border-color: rgba(0, 240, 255, 0.6);
+            background: rgba(0, 240, 255, 0.05);
+            backdrop-filter: blur(2px);
+        }
+
+        /* Typing Cursor */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #00f0ff;
+            font-weight: 300;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* Scroll Reveal (Fluid fading up) */
+        .reveal-node {
+            opacity: 0;
+            transform: translateY(50px) scale(0.97);
+            transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .reveal-node.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0,240,255,0.5); }
+    </style>
+</head>
+<body class="antialiased selection:bg-apple-cyan selection:text-black">
+
+    <!-- Fluid Droplet Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-droplet"></div>
+
+    <!-- Animated Liquid Mesh Gradient Background -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10 bg-apple-dark">
+        <!-- Massive Blurred Orbs -->
+        <div class="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-apple-cyan/10 mix-blend-screen filter blur-[120px] animate-blob"></div>
+        <div class="absolute top-[10%] right-[-10%] w-[70vw] h-[70vw] rounded-full bg-apple-blue/10 mix-blend-screen filter blur-[140px] animate-blob" style="animation-delay: 2s;"></div>
+        <div class="absolute bottom-[-20%] left-[10%] w-[60vw] h-[60vw] rounded-full bg-apple-indigo/20 mix-blend-screen filter blur-[130px] animate-blob" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- Floating Navigation Bar -->
+    <header class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-auto">
+        <nav class="ios-dock px-6 py-3 flex items-center justify-between gap-8 max-w-4xl w-full">
+            <a href="#hero" class="magnetic-target text-sm font-semibold tracking-tight text-white flex items-center gap-2.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-apple-cyan shadow-[0_0_12px_#00f0ff]"></span>
+                Shaafiul Islam Khan
+            </a>
+            <div class="hidden md:flex items-center gap-7 text-xs font-medium text-gray-400">
+                <a href="#achievements" class="magnetic-target hover:text-white transition-colors py-1">Achievements</a>
+                <a href="#projects" class="magnetic-target hover:text-white transition-colors py-1">Projects</a>
+                <a href="#education" class="magnetic-target hover:text-white transition-colors py-1">Education</a>
+                <a href="#skills" class="magnetic-target hover:text-white transition-colors py-1">Skills</a>
+                <a href="#contact" class="magnetic-target hover:text-white transition-colors py-1">Contact</a>
+            </div>
+            <a href="#contact" class="magnetic-target liquid-pill px-5 py-2 text-xs font-bold text-white tracking-wide">
+                Connect
+            </a>
+        </nav>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto px-5 sm:px-8 lg:px-10 pt-40 pb-32 space-y-40 relative z-10">
+
+        <!-- HERO SECTION -->
+        <section id="hero" class="min-h-[70vh] flex flex-col justify-center items-start reveal-node">
+            
+            <!-- Availability Badge -->
+            <div class="inline-flex items-center gap-3 mb-8 px-4 py-2 rounded-full border border-apple-cyan/30 bg-apple-cyan/10 backdrop-blur-md shadow-[0_0_20px_rgba(0,240,255,0.15)]">
+                <span class="w-2.5 h-2.5 rounded-full bg-apple-cyan shadow-[0_0_10px_#00f0ff] animate-pulse"></span>
+                <span class="text-[11px] font-bold tracking-[0.2em] uppercase text-apple-cyan">AVAILABLE FOR OPPORTUNITIES</span>
+            </div>
+            
+            <h1 class="text-5xl sm:text-7xl lg:text-[5.5rem] font-extrabold tracking-tight leading-[1.05] mb-6">
+                Hi, I'm <br>
+                <span class="text-gradient">Shaafiul Islam Khan</span>
+            </h1>
+
+            <div class="h-12 sm:h-16 mb-6">
+                <p class="text-2xl sm:text-4xl text-gray-400 font-light tracking-tight">
+                    I specialize in <span id="typed-text" class="text-white font-medium typing-cursor glow-text-cyan"></span>
+                </p>
+            </div>
+
+            <p class="text-base sm:text-xl text-gray-400 font-light max-w-2xl leading-relaxed mb-12">
+                Enthusiastic and target-oriented professional. Eager to contribute to lead conversion, student guidance, and sales growth at PeopleNTech Institute of IT.
+            </p>
+
+            <div class="flex flex-wrap gap-5 items-center">
+                <a href="#contact" class="magnetic-target px-9 py-4 rounded-full bg-white text-black font-bold text-sm shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.5)] transition-all">
+                    Hire Me as Intern
+                </a>
+                <a href="#achievements" class="magnetic-target liquid-pill px-8 py-4 text-white text-sm font-semibold flex items-center gap-2.5">
+                    View My Work <i class="fas fa-arrow-down text-apple-cyan text-[10px]"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- ACHIEVEMENTS SECTION -->
+        <section id="achievements" class="reveal-node relative">
+            <div class="flex items-center gap-5 mb-14">
+                <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white glow-text-cyan flex items-center gap-4">
+                    <i class="fas fa-trophy text-apple-cyan text-3xl"></i> Olympiads & Achievements
+                </h2>
+                <div class="h-[1px] flex-1 bg-gradient-to-r from-apple-cyan/30 to-transparent"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- AMD Hackathon -->
+                <div class="magnetic-target liquid-glass p-8 flex flex-col items-center text-center group cursor-pointer">
+                    <div class="w-20 h-20 bg-white/5 rounded-3xl p-4 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-[0_0_30px_rgba(237,28,36,0.2)] border border-white/10">
+                        <svg viewBox="0 0 200 200" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" rx="45" fill="#111"/>
+                            <polygon points="40,40 120,40 120,75 75,75 75,160 40,160" fill="#ED1C24"/>
+                            <polygon points="135,40 160,40 160,160 125,160 125,125 135,125" fill="#ED1C24"/>
+                            <polygon points="85,85 160,85 160,115 85,115" fill="#FFFFFF"/>
+                            <path d="M135 125 L160 85 L160 160 Z" fill="#ED1C24"/>
+                        </svg>
+                    </div>
+                    <span class="px-3.5 py-1 rounded-full bg-red-500/10 text-red-400 text-xs font-bold border border-red-500/20 mb-4">Participant</span>
+                    <h3 class="text-xl font-bold text-white mb-2">AMD Hackathon</h3>
+                    <p class="text-sm text-gray-400 font-light leading-relaxed">Competed in high-stakes technological innovation, engineering hardware logic & software solutions.</p>
+                </div>
+
+                <!-- ICT Olympiad -->
+                <div class="magnetic-target liquid-glass p-8 flex flex-col items-center text-center group cursor-pointer">
+                    <div class="w-20 h-20 bg-white/5 rounded-3xl p-4 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-[0_0_30px_rgba(0,240,255,0.2)] border border-white/10">
+                        <svg viewBox="0 0 100 100" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="ict-grad" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#00f0ff"/>
+                                    <stop offset="100%" stop-color="#4f46e5"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="M20 30 L50 15 L80 30 L80 70 L50 85 L20 70 Z" fill="none" stroke="url(#ict-grad)" stroke-width="6" stroke-linejoin="round"/>
+                            <circle cx="50" cy="50" r="14" fill="none" stroke="#fff" stroke-width="4"/>
+                            <path d="M50 36 L50 20 M50 64 L50 80 M36 50 L20 50 M64 50 L80 50" stroke="url(#ict-grad)" stroke-width="4"/>
+                        </svg>
+                    </div>
+                    <span class="px-3.5 py-1 rounded-full bg-apple-cyan/10 text-apple-cyan text-xs font-bold border border-apple-cyan/20 mb-4">Runner-Up</span>
+                    <h3 class="text-xl font-bold text-white mb-2">ICT Olympiad Bangladesh</h3>
+                    <p class="text-sm text-gray-400 font-light leading-relaxed">Recognized for technological mastery and strategic problem-solving skills at the national level.</p>
+                </div>
+
+                <!-- Biology Olympiad -->
+                <div class="magnetic-target liquid-glass p-8 flex flex-col items-center text-center group cursor-pointer">
+                    <div class="w-20 h-20 bg-white/5 rounded-3xl p-4 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-[0_0_30px_rgba(52,168,83,0.2)] border border-white/10">
+                        <svg viewBox="0 0 100 100" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M30 20 Q50 50 70 80 M70 20 Q50 50 30 80" stroke="#34A853" stroke-width="6" fill="none" stroke-linecap="round"/>
+                            <line x1="38" y1="32" x2="62" y2="32" stroke="#fff" stroke-width="4"/>
+                            <line x1="45" y1="50" x2="55" y2="50" stroke="#00f0ff" stroke-width="4"/>
+                            <line x1="38" y1="68" x2="62" y2="68" stroke="#fff" stroke-width="4"/>
+                        </svg>
+                    </div>
+                    <span class="px-3.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20 mb-4">National Participant</span>
+                    <h3 class="text-xl font-bold text-white mb-2">Bangladesh Biology Olympiad</h3>
+                    <p class="text-sm text-gray-400 font-light leading-relaxed">Demonstrated advanced biological analysis and analytical understanding in national competition.</p>
+                </div>
+
+                <!-- Math Olympiad -->
+                <div class="magnetic-target liquid-glass p-8 flex flex-col items-center text-center group cursor-pointer">
+                    <div class="w-20 h-20 bg-white/5 rounded-3xl p-4 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-[0_0_30px_rgba(245,158,11,0.2)] border border-white/10">
+                        <svg viewBox="0 0 100 100" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                            <text x="22" y="58" font-family="sans-serif" font-size="42" font-weight="extrabold" fill="#F59E0B">∑</text>
+                            <circle cx="70" cy="35" r="6" fill="#00f0ff"/>
+                            <circle cx="70" cy="65" r="6" fill="#00f0ff"/>
+                            <line x1="60" y1="50" x2="80" y2="50" stroke="#fff" stroke-width="4"/>
+                        </svg>
+                    </div>
+                    <span class="px-3.5 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20 mb-4">Participant</span>
+                    <h3 class="text-xl font-bold text-white mb-2">Math Olympiad Bangladesh</h3>
+                    <p class="text-sm text-gray-400 font-light leading-relaxed">Engaged in mathematical logic, complex algorithms, and analytical reasoning contests.</p>
+                </div>
+
+                <!-- STEM Olympiad -->
+                <div class="magnetic-target liquid-glass p-8 flex flex-col items-center text-center group cursor-pointer">
+                    <div class="w-20 h-20 bg-white/5 rounded-3xl p-4 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-[0_0_30px_rgba(168,85,247,0.2)] border border-white/10">
+                        <svg viewBox="0 0 100 100" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                            <ellipse cx="50" cy="50" rx="38" ry="14" fill="none" stroke="#A855F7" stroke-width="4" transform="rotate(30 50 50)"/>
+                            <ellipse cx="50" cy="50" rx="38" ry="14" fill="none" stroke="#00f0ff" stroke-width="4" transform="rotate(-30 50 50)"/>
+                            <circle cx="50" cy="50" r="8" fill="#fff"/>
+                        </svg>
+                    </div>
+                    <span class="px-3.5 py-1 rounded-full bg-purple-500/10 text-purple-400 text-xs font-bold border border-purple-500/20 mb-4">Participant</span>
+                    <h3 class="text-xl font-bold text-white mb-2">International STEM Olympiad</h3>
+                    <p class="text-sm text-gray-400 font-light leading-relaxed">Showcased integrated knowledge across Science, Technology, Engineering, and Mathematics.</p>
+                </div>
+
+                <!-- IYMC -->
+                <div class="magnetic-target liquid-glass p-8 flex flex-col items-center text-center group cursor-pointer">
+                    <div class="w-20 h-20 bg-white/5 rounded-3xl p-4 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-[0_0_30px_rgba(59,130,246,0.2)] border border-white/10">
+                        <svg viewBox="0 0 100 100" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                            <polygon points="50,15 85,35 85,75 50,95 15,75 15,35" fill="none" stroke="#3B82F6" stroke-width="5" stroke-linejoin="round"/>
+                            <path d="M35 40 L50 65 L65 40" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="50" cy="30" r="5" fill="#00f0ff"/>
+                        </svg>
+                    </div>
+                    <span class="px-3.5 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-bold border border-blue-500/20 mb-4">Participant</span>
+                    <h3 class="text-xl font-bold text-white mb-2">IYMC (Youth Math Challenge)</h3>
+                    <p class="text-sm text-gray-400 font-light leading-relaxed">Competed globally against mathematical talents in advanced problem solving.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- PROJECTS & EDUCATION -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <div id="projects" class="reveal-node flex flex-col">
+                <h2 class="text-3xl font-extrabold text-white mb-6 flex items-center gap-3">
+                    <i class="fas fa-folder-open text-apple-cyan"></i> Academic Projects
+                </h2>
+                <div class="magnetic-target liquid-glass p-10 flex-1 flex flex-col justify-between group cursor-pointer">
+                    <div>
+                        <div class="flex items-center gap-3 mb-5">
+                            <span class="px-3 py-1 rounded-full bg-apple-cyan/10 text-apple-cyan text-[11px] font-bold border border-apple-cyan/20">Academic Initiative</span>
+                            <span class="px-3 py-1 rounded-full bg-white/5 text-gray-300 text-[11px] font-bold border border-white/10">Lead Strategy</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4">
+                            Market Survey & Lead Management Script
+                        </h3>
+                        <p class="text-gray-400 text-base font-light leading-relaxed mb-6">
+                            Analyzed student demand for IT certification courses. Designed a structured call flow and counseling pitch to convert student inquiries into program enrollments.
+                        </p>
+                    </div>
+                    <div class="pt-5 border-t border-white/10 flex items-center justify-between text-xs text-gray-500">
+                        <span>Target: Student Enrollment</span>
+                        <span class="text-apple-cyan font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">Complete Framework <i class="fas fa-chevron-right text-[10px]"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="education" class="reveal-node flex flex-col">
+                <h2 class="text-3xl font-extrabold text-white mb-6 flex items-center gap-3">
+                    <i class="fas fa-graduation-cap text-apple-cyan"></i> Education
+                </h2>
+                <div class="space-y-6 flex-1 flex flex-col justify-between">
+                    
+                    <div class="magnetic-target liquid-glass p-8 flex items-center justify-between group cursor-pointer">
+                        <div>
+                            <span class="px-3 py-1 rounded-full bg-apple-blue/10 text-apple-blue text-[11px] font-bold border border-apple-blue/20 mb-3 inline-block">Batch 25</span>
+                            <h3 class="text-xl font-bold text-white">Business and Technology Management</h3>
+                            <p class="text-sm text-gray-400 font-light mt-1">Islamic University of Technology (IUT)</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-apple-cyan/50 transition-colors">
+                            <i class="fas fa-university text-apple-cyan text-lg"></i>
+                        </div>
+                    </div>
+
+                    <div class="magnetic-target liquid-glass p-8 flex items-center justify-between group cursor-pointer">
+                        <div>
+                            <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-[11px] font-bold border border-emerald-500/20 mb-3 inline-block">Passed: 2025</span>
+                            <h3 class="text-xl font-bold text-white">Higher Secondary Certificate (HSC)</h3>
+                            <p class="text-sm text-gray-400 font-light mt-1">Notre Dame College, Dhaka</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-apple-cyan/50 transition-colors">
+                            <i class="fas fa-school text-apple-cyan text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- SKILLS -->
+        <section id="skills" class="reveal-node relative">
+            <div class="text-center mb-14">
+                <h2 class="text-4xl font-extrabold text-white mb-4">Core Competencies</h2>
+                <p class="text-gray-400 text-base max-w-2xl mx-auto font-light">Strengths aligned with driving prospective inquiries into successful course admissions and building relationships.</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+                <!-- Skill items... -->
+                <div class="magnetic-target liquid-glass p-6 text-center group cursor-pointer">
+                    <i class="fas fa-comments text-apple-cyan text-2xl mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-sm font-semibold text-white">Client Communication</h3>
+                </div>
+                <div class="magnetic-target liquid-glass p-6 text-center group cursor-pointer">
+                    <i class="fas fa-user-graduate text-apple-blue text-2xl mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-sm font-semibold text-white">Student Counseling</h3>
+                </div>
+                <div class="magnetic-target liquid-glass p-6 text-center group cursor-pointer">
+                    <i class="fas fa-headset text-indigo-400 text-2xl mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-sm font-semibold text-white">Telesales & Pitching</h3>
+                </div>
+                <div class="magnetic-target liquid-glass p-6 text-center group cursor-pointer">
+                    <i class="fas fa-magnet text-emerald-400 text-2xl mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-sm font-semibold text-white">Lead Generation</h3>
+                </div>
+                <div class="magnetic-target liquid-glass p-6 text-center group cursor-pointer">
+                    <i class="fas fa-bullseye text-amber-400 text-2xl mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-sm font-semibold text-white">Target Alignment</h3>
+                </div>
+                <div class="magnetic-target liquid-glass p-6 text-center group cursor-pointer">
+                    <i class="fas fa-handshake text-rose-400 text-2xl mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-sm font-semibold text-white">Negotiation</h3>
+                </div>
+                <div class="magnetic-target liquid-glass p-6 text-center group cursor-pointer">
+                    <i class="fas fa-users-cog text-purple-400 text-2xl mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-sm font-semibold text-white">Relationship Building</h3>
+                </div>
+                <div class="magnetic-target liquid-glass p-6 text-center group cursor-pointer">
+                    <i class="fas fa-file-excel text-teal-400 text-2xl mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-sm font-semibold text-white">MS Excel / Records</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT & SOCIALS -->
+        <section id="contact" class="reveal-node">
+            <div class="liquid-glass p-10 sm:p-20 text-center rounded-[3rem] relative">
+                
+                <h2 class="text-5xl sm:text-7xl font-extrabold text-white tracking-tight glow-text-cyan mb-6">
+                    Initiate Connection.
+                </h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto mb-16 font-light leading-relaxed">
+                    Ready to contribute to sales growth and client relations. Let's discuss how my proactive mindset can benefit your team.
+                </p>
+
+                <div class="flex flex-wrap justify-center items-center gap-10 sm:gap-16">
+
+                    <!-- RAW BRAND ICONS (Gmail, WhatsApp, Instagram) -->
+                    <!-- 1. GMAIL -->
+                    <a href="mailto:shaafiulislamkhan@gmail.com" target="_blank" rel="noopener noreferrer" 
+                       class="magnetic-target flex flex-col items-center gap-3 cursor-pointer group w-20">
+                        <div class="w-14 h-14 flex items-center justify-center group-hover:scale-110 transition-transform drop-shadow-2xl">
+                            <svg viewBox="0 0 24 24" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L12 8.338l8.073-4.845c1.618-1.214 3.927-.059 3.927 1.964z" fill="#EA4335"/>
+                                <path d="M18.545 11.728v9.274h3.819a1.636 1.636 0 0 0 1.636-1.637V5.458c0-2.024-2.309-3.178-3.927-1.964z" fill="#34A853"/>
+                                <path d="M0 5.458v13.908a1.636 1.636 0 0 0 1.636 1.637h3.819V11.728z" fill="#4285F4"/>
+                                <path d="M12 16.64L5.455 11.73v9.273H18.545V11.73z" fill="#FBBC05"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">Gmail</span>
+                    </a>
+
+                    <!-- 2. WHATSAPP -->
+                    <a href="https://wa.me/8801581968817" target="_blank" rel="noopener noreferrer" 
+                       class="magnetic-target flex flex-col items-center gap-3 cursor-pointer group w-20">
+                        <div class="w-14 h-14 flex items-center justify-center group-hover:scale-110 transition-transform drop-shadow-2xl">
+                            <svg viewBox="0 0 24 24" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12.013 2a9.967 9.967 0 00-8.528 15.132L2 22l5.038-1.311A9.976 9.976 0 1012.013 2z" fill="#25D366"/>
+                                <path d="M16.326 13.916c-.246-.123-1.458-.72-1.684-.803-.226-.083-.39-.123-.555.123-.164.246-.636.803-.78 9.671-.144.164-.288.185-.534.062-1.198-.6-2.585-1.503-3.66-2.894-.286-.369-.477-.66-.723-1.152-.246-.492-.027-.758.096-.881.111-.111.246-.287.369-.43.123-.144.164-.246.246-.41.082-.164.041-.308-.02-.43-.062-.123-.555-1.334-.76-1.826-.2-.482-.403-.416-.554-.424l-.472-.008c-.164 0-.43.062-.656.308-.226.246-.86.841-.86 2.05s.88 2.378 1.004 2.542c.123.164 1.733 2.645 4.198 3.659.587.242 1.045.387 1.402.495.589.178 1.125.153 1.548.093.473-.067 1.458-.595 1.663-1.17.205-.574.205-1.066.144-1.17-.062-.103-.226-.164-.472-.287z" fill="#FFF"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">WhatsApp</span>
+                    </a>
+
+                    <!-- 3. INSTAGRAM -->
+                    <a href="https://www.instagram.com/shaafiul_islam_khan/" target="_blank" rel="noopener noreferrer" 
+                       class="magnetic-target flex flex-col items-center gap-3 cursor-pointer group w-20">
+                        <div class="w-14 h-14 flex items-center justify-center group-hover:scale-110 transition-transform drop-shadow-2xl">
+                            <svg viewBox="0 0 24 24" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="ig-grad-authentic" x1="0.5" x2="0.5" y1="0" y2="1">
+                                        <stop offset="0%" stop-color="#833AB4"/>
+                                        <stop offset="50%" stop-color="#FD1D1D"/>
+                                        <stop offset="100%" stop-color="#FCAF45"/>
+                                    </linearGradient>
+                                </defs>
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069z" fill="url(#ig-grad-authentic)"/>
+                                <path d="M12 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm0 10.162a4 4 0 110-8 4 4 0 010 8zm3.98-9.011a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z" fill="#FFF"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">Instagram</span>
+                    </a>
+
+                    <!-- CIRCULAR BUTTON ICONS (YouTube, Facebook, LinkedIn) -->
+                    <!-- 4. YOUTUBE -->
+                    <a href="https://www.youtube.com/@geekyshaafi" target="_blank" rel="noopener noreferrer" 
+                       class="magnetic-target flex flex-col items-center gap-3 cursor-pointer group w-20">
+                        <div class="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg backdrop-blur-md">
+                            <svg viewBox="0 0 24 24" class="w-8 h-8" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.083 0 12 0 12s0 3.917.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.917 24 12 24 12s0-3.917-.502-5.814z" fill="#FF0000"/>
+                                <path d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z" fill="#FFF"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">YouTube</span>
+                    </a>
+
+                    <!-- 5. FACEBOOK -->
+                    <a href="https://www.facebook.com/shaafiulislamkhan/" target="_blank" rel="noopener noreferrer" 
+                       class="magnetic-target flex flex-col items-center gap-3 cursor-pointer group w-20">
+                        <div class="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg backdrop-blur-md">
+                            <svg viewBox="0 0 24 24" class="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#1877F2"/>
+                                <path d="M16.671 15.542l.532-3.469h-3.328v-2.25c0-.949.465-1.874 1.956-1.874h1.514V5.002s-1.374-.235-2.686-.235c-2.741 0-4.533 1.662-4.533 4.669v2.637H7.078v3.469h3.047v8.385a12.09 12.09 0 003.75 0v-8.385h2.796z" fill="#FFF"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">Facebook</span>
+                    </a>
+
+                    <!-- 6. LINKEDIN -->
+                    <a href="https://linkedin.com/in/shaafiulislamkhan" target="_blank" rel="noopener noreferrer" 
+                       class="magnetic-target flex flex-col items-center gap-3 cursor-pointer group w-20">
+                        <div class="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg backdrop-blur-md">
+                            <svg viewBox="0 0 24 24" class="w-8 h-8" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22.225 0H1.77C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.77 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z" fill="#0A66C2"/>
+                                <path d="M7.12 20.452H3.558V9h3.562v11.452zM5.34 7.434c-1.14 0-2.063-.926-2.063-2.065 0-1.138.922-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.924 2.065-2.064 2.065zm15.112 13.018h-3.558v-5.57c0-1.326-.024-3.037-1.852-3.037-1.851 0-2.133 1.448-2.133 2.944v5.663H9.356V9h3.414v1.566h.047c.477-.9 1.636-1.852 3.365-1.852 3.605 0 4.267 2.372 4.267 5.455v6.283z" fill="#FFF"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">LinkedIn</span>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-white/5 py-10 text-center relative z-10">
+        <p class="text-[11px] text-gray-500 font-medium tracking-wide">
+            © 2026 Shaafiul Islam Khan. Engineered with Apple iOS Liquid Glass UI.
+        </p>
+    </footer>
+
+    <!-- INTERACTION SCRIPTS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // 1. Fluid Custom Cursor
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorDroplet = document.querySelector('.cursor-droplet');
+            
+            let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+            let dropletX = mouseX, dropletY = mouseY;
+
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                cursorDot.style.transform = `translate(calc(${mouseX}px - 50%), calc(${mouseY}px - 50%))`;
+            });
+
+            // Smooth Droplet Follow Physics
+            function animateDroplet() {
+                dropletX += (mouseX - dropletX) * 0.15;
+                dropletY += (mouseY - dropletY) * 0.15;
+                cursorDroplet.style.transform = `translate(calc(${dropletX}px - 50%), calc(${dropletY}px - 50%))`;
+                requestAnimationFrame(animateDroplet);
+            }
+            animateDroplet();
+
+            // 2. Magnetic 3D Physics for Cards and Buttons
+            const magneticElements = document.querySelectorAll('.magnetic-target');
+            
+            magneticElements.forEach(elem => {
+                elem.addEventListener('mouseenter', () => document.body.classList.add('cursor-active'));
+                
+                elem.addEventListener('mousemove', (e) => {
+                    const rect = elem.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    
+                    const deltaX = e.clientX - centerX;
+                    const deltaY = e.clientY - centerY;
+
+                    // Magnetic positional pull (max 15px shift)
+                    const pullX = deltaX * 0.2;
+                    const pullY = deltaY * 0.2;
+                    
+                    // 3D Tilt calculation
+                    const tiltX = (deltaY / (rect.height / 2)) * -6;
+                    const tiltY = (deltaX / (rect.width / 2)) * 6;
+
+                    elem.style.transform = `translate3d(${pullX}px, ${pullY}px, 0px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.02)`;
+                });
+
+                elem.addEventListener('mouseleave', () => {
+                    document.body.classList.remove('cursor-active');
+                    elem.style.transform = `translate3d(0px, 0px, 0px) rotateX(0deg) rotateY(0deg) scale(1)`;
+                });
+            });
+
+            // 3. Typing Effect
+            const typedTextSpan = document.getElementById("typed-text");
+            const textArray = [
+                "Business Development.",
+                "Lead Generation Strategy.",
+                "Olympiad Achievement.",
+                "Student Counseling & Sales."
+            ];
+            let arrayIdx = 0, charIdx = 0;
+
+            function typeEffect() {
+                if (charIdx < textArray[arrayIdx].length) {
+                    typedTextSpan.textContent += textArray[arrayIdx].charAt(charIdx);
+                    charIdx++;
+                    setTimeout(typeEffect, 70);
+                } else {
+                    setTimeout(eraseEffect, 2000);
+                }
+            }
+
+            function eraseEffect() {
+                if (charIdx > 0) {
+                    typedTextSpan.textContent = textArray[arrayIdx].substring(0, charIdx - 1);
+                    charIdx--;
+                    setTimeout(eraseEffect, 30);
+                } else {
+                    arrayIdx = (arrayIdx + 1) % textArray.length;
+                    setTimeout(typeEffect, 400);
+                }
+            }
+            setTimeout(typeEffect, 500);
+
+            // 4. Scroll Reveal Observer (Fluid Fade Up)
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal-node').forEach(node => observer.observe(node));
+        });
+    </script>
+</body>
+</html>
