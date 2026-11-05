@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Tracker</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Supabase JS Client v2 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: '#040407',
+                        surfaceGlass: 'rgba(255, 255, 255, 0.035)',
+                        iosBorder: 'rgba(255, 255, 255, 0.12)',
+                        accentIndigo: '#6366f1',
+                        accentCyan: '#06b6d4',
+                        accentRose: '#f43f5e',
+                        accentEmerald: '#10b981',
+                        accentAmber: '#f59e0b',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        heading: ['Plus Jakarta Sans', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Apple HIG Glassmorphism & Motion Physics -->
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #06b6d4;
+            --rose: #f43f5e;
+            --ios-spring: cubic-bezier(0.16, 1, 0.3, 1);
+            --ios-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #040407;
+            color: #f3f4f6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: -0.03em;
+        }
+
+        /* Ambient Liquid Glow Blobs */
+        .ambient-blob {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(140px);
+            z-index: -1;
+            opacity: 0.35;
+            pointer-events: none;
+            will-change: transform;
+        }
+        .blob-1 {
+            background: radial-gradient(circle, rgba(99,102,241,0.8) 0%, rgba(99,102,241,0) 70%);
+            top: -15%;
+            left: -12%;
+            animation: floatLiquid1 16s ease-in-out infinite alternate;
+        }
+        .blob-2 {
+            background: radial-gradient(circle, rgba(6,182,212,0.7) 0%, rgba(6,182,212,0) 70%);
+            bottom: -18%;
+            right: -12%;
+            animation: floatLiquid2 20s ease-in-out infinite alternate;
+        }
+        .blob-3 {
+            background: radial-gradient(circle, rgba(244,63,94,0.6) 0%, rgba(244,63,94,0) 70%);
+            top: 40%;
+            left: 35%;
+            animation: floatLiquid3 14s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatLiquid1 {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(90px, 70px, 0) scale(1.15); }
+            100% { transform: translate3d(-70px, 110px, 0) scale(0.9); }
+        }
+        @keyframes floatLiquid2 {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(-100px, -80px, 0) scale(1.2); }
+            100% { transform: translate3d(80px, -50px, 0) scale(0.85); }
+        }
+        @keyframes floatLiquid3 {
+            0% { transform: translate3d(0, 0, 0) scale(0.85); }
+            50% { transform: translate3d(70px, -90px, 0) scale(1.3); }
+            100% { transform: translate3d(-90px, 60px, 0) scale(0.9); }
+        }
+
+        /* Apple Glassmorphic Squircle Panels */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.035);
+            backdrop-filter: blur(40px) saturate(210%);
+            -webkit-backdrop-filter: blur(40px) saturate(210%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            border-radius: 28px;
+            transition: transform 0.4s var(--ios-spring), background-color 0.4s var(--ios-spring), border-color 0.4s var(--ios-spring), box-shadow 0.4s var(--ios-spring);
+        }
+        .glass-card-hover:hover {
+            transform: translateY(-4px) scale(1.008);
+            background: rgba(255, 255, 255, 0.055);
+            border-color: rgba(99, 102, 241, 0.45);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(99, 102, 241, 0.18);
+        }
+
+        /* Apple iOS Spring Buttons */
+        .btn-ios {
+            transition: transform 0.25s var(--ios-bounce), background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            will-change: transform;
+        }
+        .btn-ios:active {
+            transform: scale(0.94) translateZ(0);
+        }
+
+        /* Animated Tab Switch */
+        .tab-content { display: none; opacity: 0; transform: translate3d(0, 14px, 0); }
+        .tab-content.active {
+            display: block;
+            animation: iosTabEnter 0.45s var(--ios-spring) forwards;
+        }
+        @keyframes iosTabEnter {
+            to { opacity: 1; transform: translate3d(0, 0, 0); }
+        }
+
+        /* iOS User Popover Menu */
+        .ios-popover {
+            opacity: 0;
+            transform: scale(0.9) translateY(-10px);
+            pointer-events: none;
+            transition: opacity 0.25s var(--ios-spring), transform 0.25s var(--ios-spring);
+        }
+        .ios-popover.open {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        .modal-backdrop {
+            backdrop-filter: blur(24px);
+            background-color: rgba(4, 4, 7, 0.78);
+        }
+    </style>
+</head>
+<body class="min-h-screen relative flex flex-col selection:bg-indigo-500 selection:text-white">
+
+    <!-- Ambient Liquid Background -->
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+    <div class="ambient-blob blob-3"></div>
+
+    <!-- Apple iOS Header Navigation -->
+    <header class="sticky top-0 z-50 px-4 sm:px-8 py-3.5 backdrop-blur-3xl bg-[#040407]/75 border-b border-white/[0.08]">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            
+            <!-- Logo: Clean "Study Tracker" Branding -->
+            <div class="flex items-center space-x-3 cursor-pointer group" onclick="SoundEngine.playTab(); UIManager.switchTab('dashboard')">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 p-[1.5px] shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300">
+                    <div class="w-full h-full bg-[#040407]/80 backdrop-blur-md rounded-[14px] flex items-center justify-center font-heading font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-purple-300 to-cyan-300 text-sm tracking-tight">
+                        ST
+                    </div>
+                </div>
+                <div>
+                    <span class="text-base font-heading font-extrabold tracking-tight text-white group-hover:text-indigo-400 transition-colors">Study Tracker</span>
+                </div>
+            </div>
+
+            <!-- Navigation Pills -->
+            <nav class="hidden md:flex items-center space-x-1 bg-white/[0.03] backdrop-blur-2xl p-1.5 rounded-full border border-white/10 shadow-inner">
+                <button onclick="SoundEngine.playTab(); UIManager.switchTab('dashboard')" id="nav-dashboard" class="nav-btn btn-ios px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 text-white bg-white/15 shadow-sm">Dashboard</button>
+                <button onclick="SoundEngine.playTab(); UIManager.switchTab('timer')" id="nav-timer" class="nav-btn btn-ios px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 text-white/60 hover:text-white hover:bg-white/5">Focus Timer</button>
+                <button onclick="SoundEngine.playTab(); UIManager.switchTab('tracker')" id="nav-tracker" class="nav-btn btn-ios px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 text-white/60 hover:text-white hover:bg-white/5">Syllabus</button>
+                <button onclick="SoundEngine.playTab(); UIManager.switchTab('qbank')" id="nav-qbank" class="nav-btn btn-ios px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 text-white/60 hover:text-white hover:bg-white/5">Question Bank</button>
+            </nav>
+
+            <!-- User Auth & Haptic Sound Controls -->
+            <div class="flex items-center space-x-3 relative">
+                
+                <!-- Sound Effects Toggle Button -->
+                <button onclick="SoundEngine.toggleMute()" id="sound-toggle-btn" class="btn-ios p-2 rounded-full bg-white/[0.04] border border-white/10 text-gray-300 hover:text-white" title="Toggle Sound SFX">
+                    <i data-lucide="volume-2" id="sound-icon" class="w-4 h-4 text-indigo-400"></i>
+                </button>
+
+                <!-- GOOGLE ACCOUNT HEADER (LOGGED OUT) -->
+                <div id="auth-logged-out" class="flex items-center space-x-2">
+                    <div class="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/10 text-[11px] font-medium text-gray-400">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Guest Mode
+                    </div>
+                    <button onclick="SoundEngine.playClick(); SupabaseManager.signInWithGoogle()" class="btn-ios flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 border border-indigo-400/30">
+                        <!-- Google SVG Icon -->
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                        </svg>
+                        <span>Sign in with Google</span>
+                    </button>
+                </div>
+
+                <!-- GOOGLE ACCOUNT HEADER (LOGGED IN) -->
+                <div id="auth-logged-in" class="hidden items-center space-x-2">
+                    <button onclick="SoundEngine.playClick(); UIManager.toggleUserPopover()" class="btn-ios flex items-center gap-2.5 p-1 pr-3 rounded-full bg-white/[0.05] border border-white/15 hover:bg-white/10">
+                        <div class="relative">
+                            <img id="user-avatar-img" src="https://placehold.co/80x80/6366f1/ffffff?text=U" alt="Profile" class="w-7 h-7 rounded-full object-cover ring-2 ring-emerald-400">
+                            <span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-400 ring-1 ring-black"></span>
+                        </div>
+                        <span id="user-display-name" class="text-xs font-semibold text-white max-w-[110px] truncate">Student</span>
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-gray-400"></i>
+                    </button>
+                </div>
+
+                <!-- Profile Popover -->
+                <div id="user-profile-popover" class="ios-popover absolute right-0 top-12 w-64 glass-card p-4 z-[70] space-y-3">
+                    <div class="flex items-center gap-3 border-b border-white/10 pb-3">
+                        <img id="popover-avatar-img" src="https://placehold.co/80x80/6366f1/ffffff?text=U" class="w-10 h-10 rounded-full object-cover ring-2 ring-indigo-500">
+                        <div class="min-w-0">
+                            <h4 id="popover-user-name" class="text-xs font-heading font-bold text-white truncate">User Name</h4>
+                            <p id="popover-user-email" class="text-[10px] text-gray-400 truncate">user@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="text-[10px] text-emerald-400 font-medium flex items-center gap-1.5 px-2 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Supabase Cloud Sync Active
+                    </div>
+                    <button onclick="SoundEngine.playClick(); SupabaseManager.signOut()" class="btn-ios w-full py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30 text-rose-300 text-xs font-semibold flex items-center justify-center gap-2">
+                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Sign Out
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="SoundEngine.playClick(); UIManager.toggleMobileMenu()" class="md:hidden p-2 text-gray-300 hover:text-white rounded-xl bg-white/[0.05] border border-white/10">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Navigation -->
+    <div id="mobile-menu" class="fixed inset-y-0 right-0 w-72 bg-[#040407]/95 backdrop-blur-3xl z-[60] translate-x-full border-l border-white/10 p-6 flex flex-col justify-between transition-transform duration-300">
+        <div class="space-y-6">
+            <div class="flex items-center justify-between pb-4 border-b border-white/10">
+                <span class="font-heading font-bold text-white text-base">Study Tracker</span>
+                <button onclick="SoundEngine.playClick(); UIManager.toggleMobileMenu()" class="p-2 text-gray-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <nav class="flex flex-col space-y-2">
+                <button onclick="SoundEngine.playTab(); UIManager.switchTab('dashboard'); UIManager.toggleMobileMenu()" class="p-3 rounded-2xl text-left text-white bg-white/10 flex items-center gap-3 font-medium text-sm"><i data-lucide="layout-dashboard" class="w-4 h-4 text-indigo-400"></i> Dashboard</button>
+                <button onclick="SoundEngine.playTab(); UIManager.switchTab('timer'); UIManager.toggleMobileMenu()" class="p-3 rounded-2xl text-left text-white/70 hover:bg-white/5 flex items-center gap-3 font-medium text-sm"><i data-lucide="timer" class="w-4 h-4 text-cyan-400"></i> Focus Timer</button>
+                <button onclick="SoundEngine.playTab(); UIManager.switchTab('tracker'); UIManager.toggleMobileMenu()" class="p-3 rounded-2xl text-left text-white/70 hover:bg-white/5 flex items-center gap-3 font-medium text-sm"><i data-lucide="check-square" class="w-4 h-4 text-emerald-400"></i> Syllabus</button>
+                <button onclick="SoundEngine.playTab(); UIManager.switchTab('qbank'); UIManager.toggleMobileMenu()" class="p-3 rounded-2xl text-left text-white/70 hover:bg-white/5 flex items-center gap-3 font-medium text-sm"><i data-lucide="help-circle" class="w-4 h-4 text-purple-400"></i> Question Bank</button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-8 py-8">
+        
+        <!-- TAB 1: DASHBOARD -->
+        <div id="tab-dashboard" class="tab-content active space-y-8">
+            
+            <!-- Hero Apple Banner -->
+            <div class="glass-card p-8 sm:p-10 relative overflow-hidden">
+                <div class="max-w-2xl relative z-10">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-semibold text-indigo-300 mb-4">
+                        <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span> Intelligent Learning Workspace
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl font-heading font-extrabold text-white mb-3 leading-tight">
+                        Master Your Study Goals.
+                    </h1>
+                    <p class="text-gray-300 text-sm sm:text-base font-normal mb-6 leading-relaxed">
+                        A clean, unified platform designed to track your syllabus milestones, conduct focused study sessions, and practice question banks.
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="SoundEngine.playTab(); UIManager.switchTab('timer')" class="btn-ios px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 flex items-center gap-2">
+                            <i data-lucide="play" class="w-4 h-4"></i> Start Focus Session
+                        </button>
+                        <button onclick="SoundEngine.playTab(); UIManager.switchTab('qbank')" class="btn-ios px-5 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/15 text-white font-bold text-xs flex items-center gap-2">
+                            <i data-lucide="help-circle" class="w-4 h-4 text-cyan-400"></i> Practice Questions
+                        </button>
+                        <button onclick="SoundEngine.playTab(); UIManager.switchTab('tracker')" class="btn-ios px-5 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/15 text-white font-bold text-xs flex items-center gap-2">
+                            <i data-lucide="list-checks" class="w-4 h-4 text-emerald-400"></i> View Syllabus
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Quick Stats Grid -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8 pt-8 border-t border-white/10">
+                    <div class="glass-card p-4 glass-card-hover">
+                        <span id="stat-hours" class="text-2xl font-heading font-extrabold text-white block mb-0.5">0.0h</span>
+                        <span class="text-xs text-gray-400 flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5 text-indigo-400"></i> Hours Today</span>
+                    </div>
+                    <div class="glass-card p-4 glass-card-hover">
+                        <span id="stat-tasks" class="text-2xl font-heading font-extrabold text-emerald-400 block mb-0.5">0/0</span>
+                        <span class="text-xs text-gray-400 flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400"></i> Completed Tasks</span>
+                    </div>
+                    <div class="glass-card p-4 glass-card-hover">
+                        <span id="stat-streak" class="text-2xl font-heading font-extrabold text-rose-400 block mb-0.5">1 Day</span>
+                        <span class="text-xs text-gray-400 flex items-center gap-1.5"><i data-lucide="flame" class="w-3.5 h-3.5 text-rose-400"></i> Study Streak</span>
+                    </div>
+                    <div class="glass-card p-4 glass-card-hover">
+                        <span id="stat-qcount" class="text-2xl font-heading font-extrabold text-cyan-400 block mb-0.5">0</span>
+                        <span class="text-xs text-gray-400 flex items-center gap-1.5"><i data-lucide="target" class="w-3.5 h-3.5 text-cyan-400"></i> MCQs Solved</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics & Quick Task Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- 7-Day Focus Chart -->
+                <div class="lg:col-span-2 glass-card p-6 sm:p-8 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-lg font-heading font-bold text-white flex items-center gap-2">
+                                <i data-lucide="bar-chart-2" class="w-5 h-5 text-indigo-400"></i> 7-Day Focus Overview
+                            </h3>
+                            <p class="text-xs text-gray-400">Hours spent in daily focus sessions.</p>
+                        </div>
+                        <span class="text-xs font-semibold text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">Weekly Analytics</span>
+                    </div>
+                    <div class="h-48 w-full flex items-end justify-between gap-3 px-2" id="weekly-chart-bars">
+                        <!-- Dynamic bars -->
+                    </div>
+                    <div class="flex justify-between mt-4 text-[11px] text-gray-500 font-semibold uppercase tracking-wider border-t border-white/5 pt-3">
+                        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                    </div>
+                </div>
+
+                <!-- Quick Task Panel -->
+                <div class="glass-card p-6 sm:p-8 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-heading font-bold text-white mb-1 flex items-center gap-2">
+                            <i data-lucide="plus-circle" class="w-5 h-5 text-emerald-400"></i> Quick Task
+                        </h3>
+                        <p class="text-xs text-gray-400 mb-5">Add a quick goal to your checklist.</p>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1">Task Title</label>
+                                <input type="text" id="quick-task-title" placeholder="e.g. Review Calculus Formulas" class="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1">Category</label>
+                                <select id="quick-task-subject" class="w-full bg-[#0d0e17] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-gray-300 focus:outline-none focus:border-indigo-500">
+                                    <option value="General">General</option>
+                                    <option value="Science">Science</option>
+                                    <option value="Mathematics">Mathematics</option>
+                                    <option value="Business">Business</option>
+                                    <option value="Technology">Technology</option>
+                                    <option value="Humanities">Humanities</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="TaskManager.addQuickTask()" class="btn-ios w-full mt-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2">
+                        <i data-lucide="check" class="w-4 h-4"></i> Add Task
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: POMODORO TIMER -->
+        <div id="tab-timer" class="tab-content">
+            <div class="max-w-xl mx-auto glass-card p-8 sm:p-10 text-center relative overflow-hidden">
+                
+                <div class="flex justify-between items-center mb-8">
+                    <div class="text-left">
+                        <h2 class="text-2xl font-heading font-bold text-white mb-0.5">Focus Intelligence</h2>
+                        <p class="text-xs text-gray-400">Pomodoro focus timer with ambient sound generators.</p>
+                    </div>
+                    <div id="timer-mode-badge" class="px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-bold uppercase tracking-widest">
+                        Focus Mode
+                    </div>
+                </div>
+
+                <!-- Presets -->
+                <div class="flex flex-wrap justify-center items-center gap-2 mb-8">
+                    <div class="inline-flex bg-black/40 p-1 rounded-full border border-white/10">
+                        <button onclick="SoundEngine.playPop(); TimerManager.setPreset(25, 'focus')" id="preset-25" class="btn-ios px-5 py-1.5 rounded-full text-xs font-semibold text-white bg-white/15">25m</button>
+                        <button onclick="SoundEngine.playPop(); TimerManager.setPreset(5, 'short')" id="preset-5" class="btn-ios px-5 py-1.5 rounded-full text-xs font-semibold text-white/50 hover:text-white">5m</button>
+                        <button onclick="SoundEngine.playPop(); TimerManager.setPreset(15, 'long')" id="preset-15" class="btn-ios px-5 py-1.5 rounded-full text-xs font-semibold text-white/50 hover:text-white">15m</button>
+                    </div>
+                    
+                    <div class="flex items-center gap-1.5 bg-white/[0.04] border border-white/10 rounded-full pl-3 pr-1 py-1">
+                        <span class="text-[11px] text-gray-400 font-medium">Custom:</span>
+                        <input type="number" id="custom-minutes" placeholder="Min" min="1" max="240" class="bg-transparent text-white text-xs w-10 outline-none text-center font-mono">
+                        <button onclick="SoundEngine.playClick(); TimerManager.setCustomTime()" class="btn-ios bg-indigo-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">Set</button>
+                    </div>
+                </div>
+
+                <!-- Circular Arc Ring -->
+                <div class="relative w-64 h-64 sm:w-72 sm:h-72 mx-auto flex items-center justify-center mb-8">
+                    <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 288 288">
+                        <circle cx="144" cy="144" r="130" stroke="rgba(255,255,255,0.06)" stroke-width="6" fill="none" />
+                        <circle id="timer-progress-ring" cx="144" cy="144" r="130" stroke="url(#timerGradient)" stroke-width="8" fill="none" stroke-linecap="round" style="stroke-dasharray: 816.81; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear;" />
+                        <defs>
+                            <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#6366f1" />
+                                <stop offset="100%" stop-color="#06b6d4" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div class="text-center z-10">
+                        <span id="timer-display" class="text-6xl sm:text-7xl font-mono font-light tracking-tight text-white block drop-shadow-md">25:00</span>
+                        <span id="timer-state-label" class="text-[10px] uppercase tracking-[0.25em] text-gray-400 font-bold mt-2 block">Ready</span>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex justify-center items-center gap-4 mb-8">
+                    <button onclick="SoundEngine.playClick(); TimerManager.reset()" class="btn-ios p-3.5 rounded-full bg-white/[0.05] border border-white/10 text-gray-400 hover:text-white" title="Reset">
+                        <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="SoundEngine.playClick(); TimerManager.toggle()" id="timer-toggle-btn" class="btn-ios px-10 py-3.5 rounded-full bg-white text-black font-extrabold text-sm hover:bg-gray-100 shadow-2xl flex items-center gap-2.5">
+                        <i data-lucide="play" id="timer-icon" class="w-4 h-4 fill-current"></i>
+                        <span id="timer-btn-text">Start Focus</span>
+                    </button>
+                </div>
+
+                <!-- Web Audio Ambient Sounds -->
+                <div class="pt-6 border-t border-white/10">
+                    <span class="text-[11px] text-gray-400 block mb-3 font-semibold uppercase tracking-wider">Web Audio Ambient Focus Synthesizer</span>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <button onclick="AudioManager.toggleSound('rain', this)" class="btn-ios px-4 py-2 rounded-full bg-white/[0.04] border border-white/10 text-xs font-medium text-gray-300 hover:text-white flex items-center gap-2">
+                            <i data-lucide="cloud-rain" class="w-3.5 h-3.5 text-cyan-400"></i> Rain Sound
+                        </button>
+                        <button onclick="AudioManager.toggleSound('lofi', this)" class="btn-ios px-4 py-2 rounded-full bg-white/[0.04] border border-white/10 text-xs font-medium text-gray-300 hover:text-white flex items-center gap-2">
+                            <i data-lucide="headphones" class="w-3.5 h-3.5 text-indigo-400"></i> Binaural Pulse
+                        </button>
+                        <button onclick="AudioManager.toggleSound('white', this)" class="btn-ios px-4 py-2 rounded-full bg-white/[0.04] border border-white/10 text-xs font-medium text-gray-300 hover:text-white flex items-center gap-2">
+                            <i data-lucide="waves" class="w-3.5 h-3.5 text-rose-400"></i> White Noise
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: SYLLABUS & CHECKLIST -->
+        <div id="tab-tracker" class="tab-content space-y-6">
+            <div class="glass-card p-6 sm:p-8">
+                
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white mb-1">Syllabus & Task Checklist</h2>
+                        <p class="text-xs text-gray-400">Organize and monitor topics across your study subjects.</p>
+                    </div>
+                    
+                    <div class="bg-black/40 border border-white/10 p-4 rounded-2xl min-w-[260px]">
+                        <div class="flex justify-between text-xs font-semibold mb-2">
+                            <span class="text-gray-400">Syllabus Mastery</span>
+                            <span id="mastery-percent-text" class="text-indigo-400">0%</span>
+                        </div>
+                        <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+                            <div id="mastery-bar-fill" class="bg-gradient-to-r from-indigo-500 to-cyan-400 h-full w-0 transition-all duration-500 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="flex items-center justify-between gap-4 flex-wrap mb-6 pb-4 border-b border-white/10">
+                    <div class="flex flex-wrap gap-1.5" id="subject-filter-container">
+                        <button onclick="SoundEngine.playPop(); TaskManager.filterSubject('All')" class="subject-filter-btn btn-ios px-3.5 py-1 rounded-full text-xs font-semibold bg-indigo-600 text-white">All Subjects</button>
+                        <button onclick="SoundEngine.playPop(); TaskManager.filterSubject('Science')" class="subject-filter-btn btn-ios px-3.5 py-1 rounded-full text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5">Science</button>
+                        <button onclick="SoundEngine.playPop(); TaskManager.filterSubject('Mathematics')" class="subject-filter-btn btn-ios px-3.5 py-1 rounded-full text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5">Mathematics</button>
+                        <button onclick="SoundEngine.playPop(); TaskManager.filterSubject('Business')" class="subject-filter-btn btn-ios px-3.5 py-1 rounded-full text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5">Business</button>
+                        <button onclick="SoundEngine.playPop(); TaskManager.filterSubject('Technology')" class="subject-filter-btn btn-ios px-3.5 py-1 rounded-full text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5">Technology</button>
+                        <button onclick="SoundEngine.playPop(); TaskManager.filterSubject('Humanities')" class="subject-filter-btn btn-ios px-3.5 py-1 rounded-full text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5">Humanities</button>
+                    </div>
+
+                    <button onclick="SoundEngine.playClick(); TaskManager.openModal()" class="btn-ios px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs flex items-center gap-1.5 shadow-md">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Add Task
+                    </button>
+                </div>
+
+                <!-- Task List -->
+                <div id="task-list-container" class="space-y-2.5">
+                    <!-- Dynamic tasks -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: QUESTION BANK -->
+        <div id="tab-qbank" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Left Panel -->
+                <div class="glass-card p-6 space-y-5">
+                    <div>
+                        <h3 class="text-lg font-heading font-bold text-white mb-1">Question Bank</h3>
+                        <p class="text-xs text-gray-400">Practice questions with detailed explanations.</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block">View Mode</label>
+                        <div class="grid grid-cols-2 gap-2 bg-black/40 p-1 rounded-xl border border-white/10">
+                            <button onclick="SoundEngine.playPop(); QuestionManager.setViewMode('simulator')" id="qmode-sim" class="btn-ios py-2 text-xs font-semibold rounded-lg text-white bg-indigo-600 shadow-sm">Simulator</button>
+                            <button onclick="SoundEngine.playPop(); QuestionManager.setViewMode('bookmarks')" id="qmode-bookmarks" class="btn-ios py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white">Bookmarks</button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block">Category Filter</label>
+                        <select id="qbank-subject-filter" onchange="SoundEngine.playPop(); QuestionManager.applyFilter()" class="w-full bg-[#0d0e17] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-gray-300 focus:outline-none focus:border-indigo-500">
+                            <option value="All">All Categories</option>
+                            <option value="Science">Science</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Business">Business</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Humanities">Humanities</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-white/[0.02] border border-white/10 p-4 rounded-xl space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-400">Total Solved:</span>
+                            <span id="qstats-solved" class="text-white font-bold">0</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-400">Accuracy Rate:</span>
+                            <span id="qstats-accuracy" class="text-emerald-400 font-bold">0%</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-400">Bookmarked:</span>
+                            <span id="qstats-bookmarked" class="text-rose-400 font-bold">0</span>
+                        </div>
+                    </div>
+
+                    <button onclick="SoundEngine.playClick(); QuestionManager.openAddModal()" class="btn-ios w-full py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/10 border border-white/15 text-white font-semibold text-xs flex items-center justify-center gap-2">
+                        <i data-lucide="plus-circle" class="w-4 h-4 text-indigo-400"></i> Add Question
+                    </button>
+                </div>
+
+                <!-- MCQ Interactive Simulator Card -->
+                <div class="lg:col-span-2 glass-card p-6 sm:p-8 flex flex-col justify-between" id="qbank-active-card">
+                    <div>
+                        <div class="flex items-center justify-between gap-4 mb-6">
+                            <div class="flex items-center gap-2">
+                                <span id="qcard-subject-tag" class="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-bold">Subject</span>
+                                <span class="text-xs text-gray-400">Practice Session</span>
+                            </div>
+                            <button onclick="SoundEngine.playPop(); QuestionManager.toggleBookmarkCurrent()" id="qcard-bookmark-btn" class="btn-ios p-2 rounded-xl bg-white/[0.04] border border-white/10 text-gray-400 hover:text-rose-400">
+                                <i data-lucide="bookmark" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+
+                        <h3 id="qcard-question-text" class="text-lg sm:text-xl font-heading font-semibold text-white mb-6 leading-relaxed">
+                            Loading question item...
+                        </h3>
+
+                        <div id="qcard-options-container" class="space-y-3 mb-6">
+                            <!-- Options -->
+                        </div>
+
+                        <div id="qcard-explanation-box" class="hidden p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-200 leading-relaxed mb-4">
+                            <span class="font-bold block text-indigo-400 mb-1 flex items-center gap-1.5"><i data-lucide="info" class="w-3.5 h-3.5"></i> Concept Explanation:</span>
+                            <p id="qcard-explanation-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center pt-4 border-t border-white/10">
+                        <span id="qcard-progress-count" class="text-xs text-gray-500">Question 1 of 5</span>
+                        <button onclick="SoundEngine.playClick(); QuestionManager.nextQuestion()" class="btn-ios px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs flex items-center gap-2">
+                            Next Question <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto border-t border-white/[0.08] bg-[#040407]/80 backdrop-blur-2xl py-6 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                <span>Study Tracker &copy; 2026</span>
+            </div>
+            <div class="flex items-center space-x-6 font-medium">
+                <button onclick="SoundEngine.playClick(); StorageManager.exportJSON()" class="hover:text-white transition-colors flex items-center gap-1">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i> Export Backup
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: ADD TASK -->
+    <div id="modal-add-task" class="fixed inset-0 z-[100] hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="w-full max-w-lg glass-card p-6 sm:p-8 relative space-y-6">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <h3 class="text-lg font-heading font-bold text-white flex items-center gap-2"><i data-lucide="check-square" class="w-5 h-5 text-indigo-400"></i> New Study Task</h3>
+                <button onclick="SoundEngine.playClick(); TaskManager.closeModal()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1">Task Title</label>
+                    <input type="text" id="modal-task-title" placeholder="e.g. Complete Problem Set 3" class="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1">Category</label>
+                        <select id="modal-task-subject" class="w-full bg-[#0d0e17] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-gray-300 focus:outline-none focus:border-indigo-500">
+                            <option value="General">General</option>
+                            <option value="Science">Science</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Business">Business</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Humanities">Humanities</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1">Priority</label>
+                        <select id="modal-task-priority" class="w-full bg-[#0d0e17] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-gray-300 focus:outline-none focus:border-indigo-500">
+                            <option value="High">High</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button onclick="TaskManager.saveFromModal()" class="btn-ios w-full py-3 rounded-xl bg-indigo-600 text-white font-semibold text-xs flex items-center justify-center gap-2">
+                <i data-lucide="check" class="w-4 h-4"></i> Save Task
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: ADD MCQ -->
+    <div id="modal-add-question" class="fixed inset-0 z-[100] hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="w-full max-w-lg glass-card p-6 sm:p-8 relative space-y-4">
+            <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <h3 class="text-lg font-heading font-bold text-white flex items-center gap-2"><i data-lucide="help-circle" class="w-5 h-5 text-indigo-400"></i> Add Question</h3>
+                <button onclick="SoundEngine.playClick(); QuestionManager.closeAddModal()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+                <div>
+                    <label class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1">Question Prompt</label>
+                    <textarea id="mq-text" placeholder="Enter question..." class="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-2 text-xs text-white h-20 focus:outline-none focus:border-indigo-500"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="mq-opt-0" placeholder="Option A" class="bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
+                    <input type="text" id="mq-opt-1" placeholder="Option B" class="bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
+                    <input type="text" id="mq-opt-2" placeholder="Option C" class="bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
+                    <input type="text" id="mq-opt-3" placeholder="Option D" class="bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1">Correct Answer</label>
+                        <select id="mq-correct-idx" class="w-full bg-[#0d0e17] border border-white/10 rounded-xl px-3 py-2 text-xs text-gray-300">
+                            <option value="0">Option A</option>
+                            <option value="1">Option B</option>
+                            <option value="2">Option C</option>
+                            <option value="3">Option D</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1">Category</label>
+                        <select id="mq-subject" class="w-full bg-[#0d0e17] border border-white/10 rounded-xl px-3 py-2 text-xs text-gray-300">
+                            <option value="Science">Science</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Business">Business</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Humanities">Humanities</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1">Explanation</label>
+                    <input type="text" id="mq-explanation" placeholder="Brief explanation..." class="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-2 text-xs text-white">
+                </div>
+            </div>
+            <button onclick="QuestionManager.saveQuestion()" class="btn-ios w-full py-2.5 rounded-xl bg-indigo-600 text-white font-semibold text-xs flex items-center justify-center gap-2">
+                <i data-lucide="plus" class="w-4 h-4"></i> Save Question
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATIONS -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[120] space-y-2 pointer-events-none"></div>
+
+    <!-- JAVASCRIPT APPLICATION ARCHITECTURE -->
+    <script>
+        /**
+         * ADVANCED WEB AUDIO SFX ENGINE (Synthesized via AudioContext)
+         */
+        const SoundEngine = {
+            ctx: null,
+            muted: false,
+
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) this.ctx = new AudioCtx();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            },
+
+            toggleMute() {
+                this.muted = !this.muted;
+                const icon = document.getElementById('sound-icon');
+                if (this.muted) {
+                    icon.setAttribute('data-lucide', 'volume-x');
+                    icon.classList.remove('text-indigo-400');
+                    icon.classList.add('text-gray-500');
+                    UIManager.showToast('Sound effects muted', 'info');
+                } else {
+                    icon.setAttribute('data-lucide', 'volume-2');
+                    icon.classList.add('text-indigo-400');
+                    icon.classList.remove('text-gray-500');
+                    this.playChime();
+                    UIManager.showToast('Sound effects enabled', 'success');
+                }
+                lucide.createIcons();
+            },
+
+            playClick() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    const now = this.ctx.currentTime;
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.exponentialRampToValueAtTime(150, now + 0.03);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.035);
+                } catch(e) {}
+            },
+
+            playTab() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    const now = this.ctx.currentTime;
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.exponentialRampToValueAtTime(660, now + 0.06);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.065);
+                } catch(e) {}
+            },
+
+            playPop() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    const now = this.ctx.currentTime;
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.02);
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.03);
+                } catch(e) {}
+            },
+
+            playChime() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                    notes.forEach((freq, idx) => {
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.type = 'sine';
+                        const startTime = this.ctx.currentTime + (idx * 0.07);
+                        osc.frequency.setValueAtTime(freq, startTime);
+                        gain.gain.setValueAtTime(0.12, startTime);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.4);
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        osc.start(startTime);
+                        osc.stop(startTime + 0.45);
+                    });
+                } catch(e) {}
+            },
+
+            playSuccessBell() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const chord = [587.33, 739.99, 880.00, 1174.66]; // D5, F#5, A5, D6
+                    chord.forEach((freq) => {
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.type = 'sine';
+                        const now = this.ctx.currentTime;
+                        osc.frequency.setValueAtTime(freq, now);
+                        gain.gain.setValueAtTime(0.15, now);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        osc.start(now);
+                        osc.stop(now + 1.25);
+                    });
+                } catch(e) {}
+            }
+        };
+
+        /**
+         * SUPABASE GOOGLE AUTHENTICATION
+         */
+        const SUPABASE_URL = "https://zdwoggcrdjnwwszlnuru.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_eY289q7UyxtziHJig3X9gg_RV9vKreZ";
+        let supabaseClient = null;
+
+        if (window.supabase) {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+
+        const SupabaseManager = {
+            async signInWithGoogle() {
+                if (!supabaseClient) {
+                    UIManager.showToast('Supabase Client unavailable', 'error');
+                    return;
+                }
+                try {
+                    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: { redirectTo: window.location.origin }
+                    });
+                    if (error) throw error;
+                } catch (err) {
+                    console.error("Auth error:", err);
+                    UIManager.showToast(err.message || 'Check Supabase Provider settings', 'error');
+                }
+            },
+
+            async signOut() {
+                if (supabaseClient) {
+                    await supabaseClient.auth.signOut();
+                }
+                this.updateUI(null);
+                UIManager.toggleUserPopover(false);
+                UIManager.showToast('Signed out successfully', 'info');
+            },
+
+            checkSession() {
+                if (!supabaseClient) return;
+
+                supabaseClient.auth.getSession().then(({ data: { session } }) => {
+                    if (session?.user) this.updateUI(session.user);
+                });
+
+                supabaseClient.auth.onAuthStateChange((event, session) => {
+                    if (session?.user) this.updateUI(session.user);
+                    else this.updateUI(null);
+                });
+            },
+
+            updateUI(user) {
+                const loggedOutContainer = document.getElementById('auth-logged-out');
+                const loggedInContainer = document.getElementById('auth-logged-in');
+
+                if (user) {
+                    AppState.user = user;
+                    loggedOutContainer.classList.add('hidden');
+                    loggedInContainer.classList.remove('hidden');
+                    loggedInContainer.classList.add('flex');
+
+                    const avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture || `https://placehold.co/80x80/6366f1/ffffff?text=${(user.email || 'U')[0].toUpperCase()}`;
+                    const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Student';
+
+                    document.getElementById('user-avatar-img').src = avatarUrl;
+                    document.getElementById('user-display-name').innerText = name;
+                    document.getElementById('popover-avatar-img').src = avatarUrl;
+                    document.getElementById('popover-user-name').innerText = name;
+                    document.getElementById('popover-user-email').innerText = user.email || '';
+                } else {
+                    AppState.user = null;
+                    loggedOutContainer.classList.remove('hidden');
+                    loggedOutContainer.classList.add('flex');
+                    loggedInContainer.classList.add('hidden');
+                    loggedInContainer.classList.remove('flex');
+                }
+            }
+        };
+
+        /**
+         * STATE MANAGEMENT
+         */
+        const AppState = {
+            todayHours: 0.0,
+            tasks: [],
+            questions: [],
+            streak: 1,
+            questionsSolved: 0,
+            correctCount: 0,
+            user: null,
+
+            load() {
+                const saved = localStorage.getItem('study_tracker_state_v4');
+                if (saved) {
+                    try {
+                        const parsed = JSON.parse(saved);
+                        this.todayHours = parsed.todayHours || 0.0;
+                        this.tasks = parsed.tasks || this.getDefaultTasks();
+                        this.questions = parsed.questions || this.getDefaultQuestions();
+                        this.streak = parsed.streak || 1;
+                        this.questionsSolved = parsed.questionsSolved || 0;
+                        this.correctCount = parsed.correctCount || 0;
+                    } catch (e) { console.error(e); }
+                } else {
+                    this.tasks = this.getDefaultTasks();
+                    this.questions = this.getDefaultQuestions();
+                }
+            },
+
+            save() {
+                localStorage.setItem('study_tracker_state_v4', JSON.stringify({
+                    todayHours: this.todayHours,
+                    tasks: this.tasks,
+                    questions: this.questions,
+                    streak: this.streak,
+                    questionsSolved: this.questionsSolved,
+                    correctCount: this.correctCount
+                }));
+            },
+
+            getDefaultTasks() {
+                return [
+                    { id: '1', title: 'Review Fundamental Physics Concepts', subject: 'Science', priority: 'High', completed: true },
+                    { id: '2', title: 'Solve Calculus Problem Set 2', subject: 'Mathematics', priority: 'High', completed: false },
+                    { id: '3', title: 'Read Microeconomics Chapter 4', subject: 'Business', priority: 'Medium', completed: false },
+                    { id: '4', title: 'Practice Data Structures & Algorithms', subject: 'Technology', priority: 'High', completed: false }
+                ];
+            },
+
+            getDefaultQuestions() {
+                return [
+                    {
+                        id: 'q1',
+                        text: 'What is the primary function of an operating system kernel?',
+                        options: ['Graphic Rendering', 'Hardware Resource Management', 'Web Browsing', 'Database Indexing'],
+                        correctIndex: 1,
+                        explanation: 'The kernel manages memory, processes, and core hardware interaction.',
+                        subject: 'Technology',
+                        bookmarked: false
+                    },
+                    {
+                        id: 'q2',
+                        text: 'Which derivative formula correctly represents d/dx [sin(x)]?',
+                        options: ['-cos(x)', 'cos(x)', '-sin(x)', 'tan(x)'],
+                        correctIndex: 1,
+                        explanation: 'The derivative of sin(x) with respect to x is cos(x).',
+                        subject: 'Mathematics',
+                        bookmarked: true
+                    },
+                    {
+                        id: 'q3',
+                        text: 'What term describes market demand where percentage change in quantity matches percentage change in price?',
+                        options: ['Inelastic', 'Unitary Elastic', 'Perfectly Elastic', 'Cross-Elastic'],
+                        correctIndex: 1,
+                        explanation: 'Unitary elasticity occurs when elasticity equals 1.',
+                        subject: 'Business',
+                        bookmarked: false
+                    }
+                ];
+            }
+        };
+
+        /**
+         * UI MANAGER
+         */
+        const UIManager = {
+            init() {
+                AppState.load();
+                this.renderDashboard();
+                TaskManager.render();
+                QuestionManager.init();
+                SupabaseManager.checkSession();
+                lucide.createIcons();
+            },
+
+            switchTab(tabId) {
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('bg-white/15', 'shadow-sm', 'text-white');
+                    btn.classList.add('text-white/60');
+                });
+
+                const targetTab = document.getElementById(`tab-${tabId}`);
+                if (targetTab) {
+                    targetTab.classList.add('active');
+                    const targetNav = document.getElementById(`nav-${tabId}`);
+                    if (targetNav) {
+                        targetNav.classList.add('bg-white/15', 'shadow-sm', 'text-white');
+                        targetNav.classList.remove('text-white/60');
+                    }
+                }
+                lucide.createIcons();
+            },
+
+            toggleMobileMenu() {
+                document.getElementById('mobile-menu').classList.toggle('translate-x-full');
+            },
+
+            toggleUserPopover(forceState) {
+                const popover = document.getElementById('user-profile-popover');
+                if (typeof forceState === 'boolean') {
+                    if (forceState) popover.classList.add('open');
+                    else popover.classList.remove('open');
+                } else {
+                    popover.classList.toggle('open');
+                }
+            },
+
+            renderDashboard() {
+                document.getElementById('stat-hours').innerText = `${AppState.todayHours.toFixed(1)}h`;
+                const completedCount = AppState.tasks.filter(t => t.completed).length;
+                document.getElementById('stat-tasks').innerText = `${completedCount}/${AppState.tasks.length}`;
+                document.getElementById('stat-streak').innerText = `${AppState.streak} Day`;
+                document.getElementById('stat-qcount').innerText = `${AppState.questionsSolved}`;
+
+                const barsContainer = document.getElementById('weekly-chart-bars');
+                const heights = [35, 60, 45, 80, 55, 90, Math.min(100, (AppState.todayHours * 20) || 25)];
+                
+                barsContainer.innerHTML = heights.map((h, idx) => `
+                    <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer" onclick="SoundEngine.playPop()">
+                        <div class="w-full bg-indigo-500/10 rounded-xl h-full flex items-end overflow-hidden p-1">
+                            <div class="w-full bg-gradient-to-t ${idx === 6 ? 'from-indigo-500 to-cyan-400' : 'from-indigo-500/40 to-indigo-500/70'} rounded-lg group-hover:brightness-125 transition-all duration-300" style="height: ${h}%;"></div>
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            showToast(message, type = 'info') {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = `px-4 py-3 rounded-2xl border backdrop-blur-xl text-xs font-semibold text-white shadow-2xl flex items-center gap-2.5 transition-all duration-300 transform translate-y-4 opacity-0 ${
+                    type === 'success' ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-200' :
+                    type === 'error' ? 'bg-rose-500/20 border-rose-500/40 text-rose-200' :
+                    'bg-indigo-500/20 border-indigo-500/40 text-indigo-200'
+                }`;
+                toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle-2' : type === 'error' ? 'alert-circle' : 'info'}" class="w-4 h-4"></i> ${message}`;
+                container.appendChild(toast);
+                lucide.createIcons();
+
+                setTimeout(() => toast.classList.remove('translate-y-4', 'opacity-0'), 50);
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'translate-y-4');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+        };
+
+        /**
+         * TIMER MANAGER
+         */
+        const TimerManager = {
+            totalSeconds: 25 * 60,
+            remainingSeconds: 25 * 60,
+            isRunning: false,
+            timerId: null,
+
+            setPreset(min, modeName) {
+                this.pause();
+                this.totalSeconds = min * 60;
+                this.remainingSeconds = this.totalSeconds;
+                
+                document.querySelectorAll('button[id^="preset-"]').forEach(b => {
+                    b.classList.remove('bg-white/15', 'text-white');
+                    b.classList.add('text-white/50');
+                });
+                const btn = document.getElementById(`preset-${min}`);
+                if (btn) btn.classList.add('bg-white/15', 'text-white');
+
+                document.getElementById('timer-mode-badge').innerText = `${modeName.toUpperCase()} MODE`;
+                this.updateDisplay();
+            },
+
+            setCustomTime() {
+                const val = parseInt(document.getElementById('custom-minutes').value);
+                if (val && val > 0 && val <= 300) this.setPreset(val, 'custom');
+            },
+
+            toggle() {
+                if (this.isRunning) this.pause();
+                else this.start();
+            },
+
+            start() {
+                if (this.isRunning) return;
+                this.isRunning = true;
+                document.getElementById('timer-btn-text').innerText = 'Pause';
+                document.getElementById('timer-icon').setAttribute('data-lucide', 'pause');
+                document.getElementById('timer-state-label').innerText = 'Focus In Progress';
+                lucide.createIcons();
+
+                this.timerId = setInterval(() => {
+                    if (this.remainingSeconds > 0) {
+                        this.remainingSeconds--;
+                        this.updateDisplay();
+                    } else {
+                        this.onComplete();
+                    }
+                }, 1000);
+            },
+
+            pause() {
+                this.isRunning = false;
+                clearInterval(this.timerId);
+                document.getElementById('timer-btn-text').innerText = 'Resume';
+                document.getElementById('timer-icon').setAttribute('data-lucide', 'play');
+                document.getElementById('timer-state-label').innerText = 'Paused';
+                lucide.createIcons();
+            },
+
+            reset() {
+                this.pause();
+                this.remainingSeconds = this.totalSeconds;
+                document.getElementById('timer-btn-text').innerText = 'Start Focus';
+                document.getElementById('timer-state-label').innerText = 'Ready';
+                this.updateDisplay();
+            },
+
+            onComplete() {
+                this.pause();
+                SoundEngine.playSuccessBell();
+                const addedHours = (this.totalSeconds / 3600);
+                AppState.todayHours += addedHours;
+                AppState.save();
+                UIManager.renderDashboard();
+                UIManager.showToast(`Focus session complete! Logged +${Math.round(addedHours * 60)}m`, 'success');
+            },
+
+            updateDisplay() {
+                const m = Math.floor(this.remainingSeconds / 60);
+                const s = this.remainingSeconds % 60;
+                document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+                const ring = document.getElementById('timer-progress-ring');
+                const circumference = 816.81;
+                const offset = circumference - (this.remainingSeconds / this.totalSeconds) * circumference;
+                ring.style.strokeDashoffset = offset;
+            }
+        };
+
+        /**
+         * WEB AUDIO AMBIENT SYNTHESIZER
+         */
+        const AudioManager = {
+            activeNodes: {},
+
+            toggleSound(type, btnElement) {
+                SoundEngine.init();
+                if (!SoundEngine.ctx) return;
+
+                if (this.activeNodes[type]) {
+                    this.activeNodes[type].stop();
+                    delete this.activeNodes[type];
+                    btnElement.classList.remove('bg-indigo-600', 'text-white');
+                    btnElement.classList.add('bg-white/[0.04]', 'text-gray-300');
+                    SoundEngine.playPop();
+                } else {
+                    const node = this.createNoiseSource(type);
+                    if (node) {
+                        this.activeNodes[type] = node;
+                        btnElement.classList.add('bg-indigo-600', 'text-white');
+                        btnElement.classList.remove('bg-white/[0.04]', 'text-gray-300');
+                        SoundEngine.playChime();
+                    }
+                }
+            },
+
+            createNoiseSource(type) {
+                const ctx = SoundEngine.ctx;
+                const bufferSize = ctx.sampleRate * 2;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+                noise.loop = true;
+
+                const filter = ctx.createBiquadFilter();
+                const gain = ctx.createGain();
+
+                if (type === 'rain') {
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(800, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                } else if (type === 'lofi') {
+                    filter.type = 'bandpass';
+                    filter.frequency.setValueAtTime(350, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                } else {
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(1500, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.06, ctx.currentTime);
+                }
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(ctx.destination);
+                noise.start();
+                return noise;
+            }
+        };
+
+        /**
+         * TASK MANAGER
+         */
+        const TaskManager = {
+            currentFilter: 'All',
+
+            render() {
+                const container = document.getElementById('task-list-container');
+                let filtered = AppState.tasks;
+                if (this.currentFilter !== 'All') {
+                    filtered = filtered.filter(t => t.subject.toLowerCase().includes(this.currentFilter.toLowerCase()));
+                }
+
+                if (filtered.length === 0) {
+                    container.innerHTML = `<div class="text-center py-8 text-xs text-gray-500">No tasks found for ${this.currentFilter}.</div>`;
+                    return;
+                }
+
+                container.innerHTML = filtered.map(t => `
+                    <div class="glass-card p-4 flex items-center justify-between gap-4 glass-card-hover">
+                        <div class="flex items-center gap-3 flex-1 min-w-0">
+                            <button onclick="TaskManager.toggleTask('${t.id}')" class="btn-ios w-5 h-5 rounded-lg border ${t.completed ? 'bg-indigo-600 border-indigo-500 text-white' : 'border-white/30'} flex items-center justify-center shrink-0">
+                                <i data-lucide="check" class="w-3.5 h-3.5 ${t.completed ? 'block' : 'hidden'}"></i>
+                            </button>
+                            <span class="text-xs font-medium ${t.completed ? 'line-through text-gray-500' : 'text-white'} truncate">${t.title}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">${t.subject}</span>
+                            <button onclick="SoundEngine.playPop(); TaskManager.deleteTask('${t.id}')" class="btn-ios p-1 text-gray-500 hover:text-rose-400"><i data-lucide="trash" class="w-3.5 h-3.5"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+
+                this.updateMasteryBar();
+                lucide.createIcons();
+            },
+
+            addQuickTask() {
+                const input = document.getElementById('quick-task-title');
+                const subject = document.getElementById('quick-task-subject').value;
+
+                if (!input.value.trim()) return;
+
+                SoundEngine.playChime();
+                AppState.tasks.unshift({
+                    id: Date.now().toString(),
+                    title: input.value.trim(),
+                    subject: subject,
+                    priority: 'Medium',
+                    completed: false
+                });
+
+                AppState.save();
+                input.value = '';
+                this.render();
+                UIManager.renderDashboard();
+                UIManager.showToast('Task added to checklist', 'success');
+            },
+
+            toggleTask(id) {
+                const t = AppState.tasks.find(x => x.id === id);
+                if (t) {
+                    t.completed = !t.completed;
+                    if (t.completed) SoundEngine.playChime();
+                    else SoundEngine.playPop();
+                    AppState.save();
+                    this.render();
+                    UIManager.renderDashboard();
+                }
+            },
+
+            deleteTask(id) {
+                AppState.tasks = AppState.tasks.filter(x => x.id !== id);
+                AppState.save();
+                this.render();
+                UIManager.renderDashboard();
+            },
+
+            filterSubject(subj) {
+                this.currentFilter = subj;
+                this.render();
+            },
+
+            updateMasteryBar() {
+                if (AppState.tasks.length === 0) return;
+                const completed = AppState.tasks.filter(t => t.completed).length;
+                const pct = Math.round((completed / AppState.tasks.length) * 100);
+                document.getElementById('mastery-percent-text').innerText = `${pct}%`;
+                document.getElementById('mastery-bar-fill').style.width = `${pct}%`;
+            },
+
+            openModal() { document.getElementById('modal-add-task').classList.remove('hidden'); },
+            closeModal() { document.getElementById('modal-add-task').classList.add('hidden'); },
+
+            saveFromModal() {
+                const title = document.getElementById('modal-task-title').value;
+                const subject = document.getElementById('modal-task-subject').value;
+                const priority = document.getElementById('modal-task-priority').value;
+                if (title) {
+                    SoundEngine.playChime();
+                    AppState.tasks.unshift({ id: Date.now().toString(), title, subject, priority, completed: false });
+                    AppState.save();
+                    this.closeModal();
+                    this.render();
+                    UIManager.renderDashboard();
+                }
+            }
+        };
+
+        /**
+         * QUESTION BANK MANAGER
+         */
+        const QuestionManager = {
+            currentIndex: 0,
+            viewMode: 'simulator',
+            filteredQuestions: [],
+
+            init() { this.applyFilter(); },
+
+            applyFilter() {
+                const subj = document.getElementById('qbank-subject-filter').value;
+                let list = AppState.questions;
+                if (this.viewMode === 'bookmarks') list = list.filter(q => q.bookmarked);
+                else if (subj !== 'All') list = list.filter(q => q.subject.includes(subj));
+
+                this.filteredQuestions = list;
+                this.currentIndex = 0;
+                this.renderQuestionCard();
+                this.updateStats();
+            },
+
+            setViewMode(mode) {
+                this.viewMode = mode;
+                document.getElementById('qmode-sim').className = mode === 'simulator' ? 'btn-ios py-2 text-xs font-semibold rounded-lg text-white bg-indigo-600 shadow-sm' : 'btn-ios py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white';
+                document.getElementById('qmode-bookmarks').className = mode === 'bookmarks' ? 'btn-ios py-2 text-xs font-semibold rounded-lg text-white bg-indigo-600 shadow-sm' : 'btn-ios py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white';
+                this.applyFilter();
+            },
+
+            renderQuestionCard() {
+                const q = this.filteredQuestions[this.currentIndex];
+                const card = document.getElementById('qbank-active-card');
+
+                if (!q) {
+                    card.innerHTML = `<div class="text-center py-16 text-xs text-gray-500">No questions available in this view. Click "+ Add Question" to add custom questions.</div>`;
+                    return;
+                }
+
+                document.getElementById('qcard-subject-tag').innerText = q.subject;
+                document.getElementById('qcard-question-text').innerText = q.text;
+
+                const bmBtn = document.getElementById('qcard-bookmark-btn');
+                bmBtn.className = `btn-ios p-2 rounded-xl border transition-colors ${q.bookmarked ? 'bg-rose-500/20 border-rose-500/40 text-rose-400' : 'bg-white/[0.04] border-white/10 text-gray-400'}`;
+
+                const optsContainer = document.getElementById('qcard-options-container');
+                optsContainer.innerHTML = q.options.map((opt, idx) => `
+                    <button onclick="QuestionManager.selectOption(${idx})" class="mcq-opt-btn btn-ios w-full p-3.5 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-indigo-500/40 text-left text-xs text-gray-200 flex items-center justify-between">
+                        <span>${String.fromCharCode(65 + idx)}. ${opt}</span>
+                    </button>
+                `).join('');
+
+                document.getElementById('qcard-explanation-box').classList.add('hidden');
+                document.getElementById('qcard-progress-count').innerText = `Question ${this.currentIndex + 1} of ${this.filteredQuestions.length}`;
+            },
+
+            selectOption(selectedIdx) {
+                const q = this.filteredQuestions[this.currentIndex];
+                const buttons = document.querySelectorAll('.mcq-opt-btn');
+
+                buttons.forEach((btn, idx) => {
+                    btn.disabled = true;
+                    if (idx === q.correctIndex) btn.classList.add('bg-emerald-500/20', 'border-emerald-500/50', 'text-emerald-200');
+                    else if (idx === selectedIdx) btn.classList.add('bg-rose-500/20', 'border-rose-500/50', 'text-rose-200');
+                });
+
+                if (selectedIdx === q.correctIndex) {
+                    SoundEngine.playChime();
+                    AppState.correctCount++;
+                } else {
+                    SoundEngine.playPop();
+                }
+
+                AppState.questionsSolved++;
+                AppState.save();
+                this.updateStats();
+                UIManager.renderDashboard();
+
+                document.getElementById('qcard-explanation-text').innerText = q.explanation || 'Answer rationale notes.';
+                document.getElementById('qcard-explanation-box').classList.remove('hidden');
+            },
+
+            nextQuestion() {
+                if (this.currentIndex < this.filteredQuestions.length - 1) {
+                    this.currentIndex++;
+                    this.renderQuestionCard();
+                } else {
+                    UIManager.showToast('Reached end of questions');
+                }
+            },
+
+            toggleBookmarkCurrent() {
+                const q = this.filteredQuestions[this.currentIndex];
+                if (q) {
+                    q.bookmarked = !q.bookmarked;
+                    AppState.save();
+                    this.renderQuestionCard();
+                    this.updateStats();
+                }
+            },
+
+            updateStats() {
+                document.getElementById('qstats-solved').innerText = AppState.questionsSolved;
+                const acc = AppState.questionsSolved ? Math.round((AppState.correctCount / AppState.questionsSolved) * 100) : 0;
+                document.getElementById('qstats-accuracy').innerText = `${acc}%`;
+                document.getElementById('qstats-bookmarked').innerText = AppState.questions.filter(q => q.bookmarked).length;
+            },
+
+            openAddModal() { document.getElementById('modal-add-question').classList.remove('hidden'); },
+            closeAddModal() { document.getElementById('modal-add-question').classList.add('hidden'); },
+
+            saveQuestion() {
+                const text = document.getElementById('mq-text').value;
+                const opts = [
+                    document.getElementById('mq-opt-0').value || 'A',
+                    document.getElementById('mq-opt-1').value || 'B',
+                    document.getElementById('mq-opt-2').value || 'C',
+                    document.getElementById('mq-opt-3').value || 'D'
+                ];
+                const correctIdx = parseInt(document.getElementById('mq-correct-idx').value);
+                const subject = document.getElementById('mq-subject').value;
+                const explanation = document.getElementById('mq-explanation').value;
+
+                if (text) {
+                    SoundEngine.playChime();
+                    AppState.questions.unshift({ id: 'q_' + Date.now(), text, options: opts, correctIndex: correctIdx, subject, explanation, bookmarked: false });
+                    AppState.save();
+                    this.closeAddModal();
+                    this.applyFilter();
+                    UIManager.showToast('Question added successfully', 'success');
+                }
+            }
+        };
+
+        /**
+         * DATA EXPORT MANAGER
+         */
+        const StorageManager = {
+            exportJSON() {
+                const json = JSON.stringify(AppState, null, 2);
+                const blob = new Blob([json], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `Study_Tracker_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+                a.click();
+            }
+        };
+
+        // Initialize on page load
+        window.onload = function() {
+            UIManager.init();
+        };
+    </script>
+</body>
+</html>
